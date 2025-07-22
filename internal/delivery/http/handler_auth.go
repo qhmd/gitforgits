@@ -23,6 +23,7 @@ func NewAuthHandler(app *fiber.App, uc *usecase.AuthUseCase) {
 	app.Post("/auth/register", middleware.ValidateAuthReg(), h.Register)
 	app.Post("/auth/login", middleware.ValidateAuthLogin(), h.Login)
 	app.Post("/auth/logout", h.Logout)
+	app.Get("/auth/me", middleware.JWT(), h.Me)
 	app.Post("/auth/refresh", h.RefreshToken)
 }
 
@@ -77,17 +78,15 @@ func (h *AuthHandler) Login(c *fiber.Ctx) error {
 			"role":  user.Role,
 		},
 	})
-
 }
 
-func (h *AuthHandler) GetUserByID(c *fiber.Ctx) error {
-	id, _ := strconv.Atoi(c.Params("id"))
-	user, err := h.Usecase.GetUserByID(c.Context(), uint(id))
+func (h *AuthHandler) Me(c *fiber.Ctx) error {
+	emailUser := c.Locals("userEmail").(string)
+	user, err := h.Usecase.Me(c.Context(), emailUser)
 	if err != nil {
-		return c.Status(404).JSON(fiber.Map{"error": "user not found"})
+		return c.Status(4001).JSON(fiber.Map{"error": err.Error()})
 	}
-	return c.JSON(user)
-
+	return c.Status(200).JSON(user)
 }
 
 func (h *AuthHandler) Logout(c *fiber.Ctx) error {
@@ -100,6 +99,16 @@ func (h *AuthHandler) Logout(c *fiber.Ctx) error {
 		SameSite: "Strict",
 	})
 	return c.SendStatus(204)
+}
+
+func (h *AuthHandler) GetUserByID(c *fiber.Ctx) error {
+	id, _ := strconv.Atoi(c.Params("id"))
+	user, err := h.Usecase.GetUserByID(c.Context(), uint(id))
+	if err != nil {
+		return c.Status(404).JSON(fiber.Map{"error": "user not found"})
+	}
+	return c.JSON(user)
+
 }
 
 func (h *AuthHandler) RefreshToken(c *fiber.Ctx) error {

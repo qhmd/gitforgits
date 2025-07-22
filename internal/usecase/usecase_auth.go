@@ -7,6 +7,7 @@ import (
 
 	"github.com/qhmd/gitforgits/config"
 	"github.com/qhmd/gitforgits/internal/domain/auth"
+	"github.com/qhmd/gitforgits/internal/dto"
 	"github.com/qhmd/gitforgits/utils"
 )
 
@@ -43,6 +44,23 @@ func (u *AuthUseCase) LoginUser(ctx context.Context, email, password string) (*a
 		return nil, errors.New("invalid email or password")
 	}
 	return user, nil
+}
+
+func (u *AuthUseCase) Me(ctx context.Context, email string) (*dto.UserResponse, error) {
+	user, err := u.repo.FindByEmail(ctx, email)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, errors.New("user not found")
+	}
+	userReponse := &dto.UserResponse{
+		ID:    user.ID,
+		Name:  user.Name,
+		Email: user.Email,
+		Role:  user.Role,
+	}
+	return userReponse, nil
 }
 
 func (u *AuthUseCase) GetUserByID(ctx context.Context, id uint) (*auth.Auth, error) {
