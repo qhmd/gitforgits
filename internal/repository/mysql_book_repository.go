@@ -1,4 +1,4 @@
-package book
+package repository
 
 import (
 	"context"

@@ -6,10 +6,11 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/joho/godotenv"
-	"github.com/qhmd/gitforgits/internal/delivery/http/book"
-	bookRepo "github.com/qhmd/gitforgits/internal/repository/book"
-	bookUseCase "github.com/qhmd/gitforgits/internal/usecase/book"
+	handler "github.com/qhmd/gitforgits/internal/delivery/http"
+	repo "github.com/qhmd/gitforgits/internal/repository"
+	useCase "github.com/qhmd/gitforgits/internal/usecase"
 	"github.com/qhmd/gitforgits/pkg/database"
+	"github.com/qhmd/gitforgits/utils"
 )
 
 func init() {
@@ -20,13 +21,19 @@ func init() {
 
 func main() {
 	app := fiber.New()
+	utils.InitValidator()
 	fmt.Print("listen in port 8080...")
 	db := database.InitMySQL()
-	database.RunMigaration(db)
+	database.RunMigration(db)
 
-	repo := bookRepo.NewMySQLBookRepository(db)
-	uc := bookUseCase.NewBookUsecase(repo)
-	book.NewBookHandler(app, uc)
+	repoBook := repo.NewMySQLBookRepository(db)
+	repoAuth := repo.NewMySQLAuthRepository(db)
+
+	ucBook := useCase.NewBookUsecase(repoBook)
+	ucAuth := useCase.NewAuthUsecase(repoAuth)
+
+	handler.NewBookHandler(app, ucBook)
+	handler.NewAuthHandler(app, ucAuth)
 	app.Get("/", Welcome)
 
 	app.Listen(":8080")

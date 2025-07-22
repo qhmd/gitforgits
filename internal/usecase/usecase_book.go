@@ -1,8 +1,10 @@
-package book
+package usecase
 
 import (
 	"context"
+	"fmt"
 
+	"github.com/qhmd/gitforgits/config"
 	"github.com/qhmd/gitforgits/internal/domain/book"
 )
 
@@ -30,7 +32,7 @@ func (u *BookUseCase) Create(ctx context.Context, b *book.Book) error {
 	}
 
 	if existing != nil {
-		return book.ErrBookTitleExists
+		return config.ErrBookTitleExists
 	}
 
 	return u.repo.CreateBook(ctx, b)
@@ -41,5 +43,15 @@ func (u *BookUseCase) Delete(ctx context.Context, id int) error {
 }
 
 func (u *BookUseCase) Update(ctx context.Context, b *book.Book) error {
+	fmt.Println("ini" + b.Title)
+	existing, err := u.repo.GetBookByTitle(ctx, b.Title)
+
+	if err != nil {
+		return err
+	}
+
+	if existing != nil {
+		return config.ErrBookTitleExists
+	}
 	return u.repo.UpdateBook(ctx, b)
 }
