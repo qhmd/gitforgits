@@ -24,6 +24,7 @@ func NewAuthHandler(app *fiber.App, uc *usecase.AuthUseCase) {
 	app.Post("/auth/login", middleware.ValidateAuthLogin(), h.Login)
 	app.Post("/auth/logout", h.Logout)
 	app.Get("/auth/me", middleware.JWT(), h.Me)
+	app.Get("/auth/me/update", middleware.JWT(), h.UpdateMe)
 	app.Post("/auth/refresh", h.RefreshToken)
 }
 
@@ -84,7 +85,7 @@ func (h *AuthHandler) Me(c *fiber.Ctx) error {
 	emailUser := c.Locals("userEmail").(string)
 	user, err := h.Usecase.Me(c.Context(), emailUser)
 	if err != nil {
-		return c.Status(4001).JSON(fiber.Map{"error": err.Error()})
+		return c.Status(401).JSON(fiber.Map{"error": err.Error()})
 	}
 	return c.Status(200).JSON(user)
 }
@@ -133,4 +134,16 @@ func (h *AuthHandler) RefreshToken(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"access_token": accessToken,
 	})
+}
+
+func (h *AuthHandler) UpdateMe(c *fiber.Ctx) error {
+	req := c.Locals("validateAuth").(dto.RegisterRequest)
+	user, err := h.Usecase.Me(c.Context(), req.Email)
+	if err != nil {
+		return c.Status(401).JSON(fiber.Map{"error": err.Error()})
+	}
+
+	user.Email = req.Email
+	// wait til tomrrow
+	return nil
 }

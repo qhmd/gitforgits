@@ -63,6 +63,22 @@ func (u *AuthUseCase) Me(ctx context.Context, email string) (*dto.UserResponse, 
 	return userReponse, nil
 }
 
+func (u *AuthUseCase) UpdateMe(ctx context.Context, email string) (*dto.RegisterRequest, error) {
+	user, err := u.repo.FindByEmail(ctx, email)
+	if err != nil {
+		return nil, err
+	}
+	if user == nil {
+		return nil, errors.New("user not found")
+	}
+	userUpdateReponse := &dto.RegisterRequest{
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: user.Password,
+	}
+	return userUpdateReponse, nil
+}
+
 func (u *AuthUseCase) GetUserByID(ctx context.Context, id uint) (*auth.Auth, error) {
 	return u.repo.GetUserByID(ctx, id)
 }
