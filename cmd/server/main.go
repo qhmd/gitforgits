@@ -5,7 +5,10 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/swagger"
 	"github.com/joho/godotenv"
+	_ "github.com/qhmd/gitforgits/cmd/server/docs"
 	handler "github.com/qhmd/gitforgits/internal/delivery/http"
 	repo "github.com/qhmd/gitforgits/internal/repository"
 	useCase "github.com/qhmd/gitforgits/internal/usecase"
@@ -19,26 +22,30 @@ func init() {
 	}
 }
 
+//	@title			GitForGits API
+//	@version		1.0
+//	@description	API documentation for project GitForGits
+//	@termsOfService	http://swagger.io/terms/
+//  @securityDefinitions.apikey BearerAuth
+//  @in header
+//  @name Authorization
+
 func main() {
 	app := fiber.New()
+	app.Use(cors.New())
+
 	utils.InitValidator()
 	fmt.Print("listen in port 8080...")
 	db := database.InitMySQL()
 	database.RunMigration(db)
-
 	repoBook := repo.NewMySQLBookRepository(db)
 	repoAuth := repo.NewMySQLAuthRepository(db)
 
 	ucBook := useCase.NewBookUsecase(repoBook)
 	ucAuth := useCase.NewAuthUsecase(repoAuth)
 
+	app.Get("/swagger/*", swagger.HandlerDefault)
 	handler.NewBookHandler(app, ucBook)
 	handler.NewAuthHandler(app, ucAuth)
-	app.Get("/", Welcome)
-
 	app.Listen(":8080")
-}
-
-func Welcome(c *fiber.Ctx) error {
-	return c.SendString("Welcodd Bro")
 }
