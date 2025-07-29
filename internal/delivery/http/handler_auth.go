@@ -1,6 +1,7 @@
 package http
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -12,6 +13,7 @@ import (
 	"github.com/qhmd/gitforgits/internal/middleware"
 	"github.com/qhmd/gitforgits/internal/usecase"
 	"github.com/qhmd/gitforgits/utils"
+	"gorm.io/gorm"
 )
 
 type AuthHandler struct {
@@ -138,12 +140,14 @@ func (h *AuthHandler) RefreshToken(c *fiber.Ctx) error {
 
 func (h *AuthHandler) UpdateMe(c *fiber.Ctx) error {
 	req := c.Locals("validateAuth").(dto.RegisterRequest)
-
+	id := uint(c.Locals("userID").(float64))
 	userData := &auth.Auth{
+		Model:    gorm.Model{ID: id},
 		Name:     req.Name,
 		Email:    req.Email,
 		Password: req.Password,
 	}
+	fmt.Print("ID ", userData.ID)
 
 	updatedReq, err := h.Usecase.UpdateMe(c.Context(), userData)
 	if err != nil {

@@ -49,8 +49,10 @@ func (u *BookUseCase) Update(ctx context.Context, b *book.Book) error {
 	if err != nil {
 		return err
 	}
-
 	if existing != nil {
+		if existing.Title == b.Title {
+			return u.repo.UpdateBook(ctx, b)
+		}
 		return config.ErrBookTitleExists
 	}
 	return u.repo.UpdateBook(ctx, b)

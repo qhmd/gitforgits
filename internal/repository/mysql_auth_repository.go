@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/qhmd/gitforgits/internal/domain/auth"
 	"gorm.io/gorm"
@@ -19,7 +20,8 @@ func NewMySQLAuthRepository(db *gorm.DB) auth.AuthRepository {
 }
 
 func (m *mysqlAuthRepository) UpdateMe(ctx context.Context, user *auth.Auth) (*auth.Auth, error) {
-	if err := m.db.WithContext(ctx).Model(user).Where("email = ?", &user.Email).Updates(user).Error; err != nil {
+	fmt.Print("isi semuanya ", user)
+	if err := m.db.WithContext(ctx).Model(user).Where("id = ?", &user.ID).Updates(user).Error; err != nil {
 		return nil, err
 	}
 	return user, nil

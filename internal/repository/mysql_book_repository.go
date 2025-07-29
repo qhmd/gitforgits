@@ -42,7 +42,7 @@ func (m *mysqlBookRepository) ListBook(ctx context.Context) ([]*book.Book, error
 
 // UpdateBook implements book.BookRepository.
 func (m *mysqlBookRepository) UpdateBook(ctx context.Context, book *book.Book) error {
-	return m.db.WithContext(ctx).Save(book).Error
+	return m.db.WithContext(ctx).Where("id = ?", book.ID).Updates(book).Error
 }
 
 func (m *mysqlBookRepository) GetBookByTitle(ctx context.Context, title string) (*book.Book, error) {

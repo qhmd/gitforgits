@@ -9,6 +9,7 @@ import (
 	"github.com/qhmd/gitforgits/internal/domain/auth"
 	"github.com/qhmd/gitforgits/internal/dto"
 	"github.com/qhmd/gitforgits/utils"
+	"gorm.io/gorm"
 )
 
 type AuthUseCase struct {
@@ -63,7 +64,7 @@ func (u *AuthUseCase) Me(ctx context.Context, email string) (*dto.RegisterReques
 }
 
 func (u *AuthUseCase) UpdateMe(ctx context.Context, user *auth.Auth) (*dto.RegisterRequest, error) {
-	req, err := u.repo.FindByEmail(ctx, user.Email)
+	req, err := u.repo.GetUserByID(ctx, user.ID)
 	if err != nil {
 		return nil, err
 	}
@@ -77,6 +78,7 @@ func (u *AuthUseCase) UpdateMe(ctx context.Context, user *auth.Auth) (*dto.Regis
 	}
 
 	userUpdateReponse := &auth.Auth{
+		Model:    gorm.Model{ID: user.ID},
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: hashedPassword,
