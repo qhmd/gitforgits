@@ -12,6 +12,19 @@ type mysqlAuthRepository struct {
 	db *gorm.DB
 }
 
+// UpdateMe implements auth.AuthRepository.
+
+func NewMySQLAuthRepository(db *gorm.DB) auth.AuthRepository {
+	return &mysqlAuthRepository{db: db}
+}
+
+func (m *mysqlAuthRepository) UpdateMe(ctx context.Context, user *auth.Auth) (*auth.Auth, error) {
+	if err := m.db.WithContext(ctx).Model(user).Where("email = ?", &user.Email).Updates(user).Error; err != nil {
+		return nil, err
+	}
+	return user, nil
+}
+
 // DeleteUser implements auth.AuthRepository.
 func (m *mysqlAuthRepository) DeleteUser(ctx context.Context, id uint) error {
 	panic("unimplemented")
@@ -47,8 +60,4 @@ func (m *mysqlAuthRepository) GetUserByID(ctx context.Context, id uint) (*auth.A
 	var u auth.Auth
 	err := m.db.WithContext(ctx).First(&u, id).Error
 	return &u, err
-}
-
-func NewMySQLAuthRepository(db *gorm.DB) auth.AuthRepository {
-	return &mysqlAuthRepository{db: db}
 }

@@ -13,7 +13,6 @@ func GetDSN() string {
 	name := os.Getenv("DB_NAME")
 	fmt.Print("ini isinya : " + user + pass + host + port + name)
 	// Format DSN
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
-		user, pass, host, port, name)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", user, pass, host, port, name)
 	return dsn
 }

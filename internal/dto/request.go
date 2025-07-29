@@ -1,9 +1,9 @@
 package dto
 
 type BookRequest struct {
-	Title  string `json:"title" validate:"required"`
-	Author string `json:"author" validate:"required,min=4,max=50,alphaSpace"`
-	Page   int    `json:"page" validate:"required,gt=0"`
+	Title  string `json:"title" validate:"required" example:"How To Become Backend Engineer"`
+	Author string `json:"author" validate:"required,min=4,max=50,alphaSpace" example:"John Smith"`
+	Page   int    `json:"page" validate:"required,gt=0" example:"205"`
 }
 
 type RegisterRequest struct {
@@ -14,7 +14,7 @@ type RegisterRequest struct {
 
 type LoginRequest struct {
 	Email    string `json:"email" validate:"required,email"`
-	Password string `json:"password" validate:"required"`
+	Password string `json:"password" validate:"required,password"`
 }
 
 type UserResponse struct {

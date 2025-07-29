@@ -46,7 +46,7 @@ func (u *AuthUseCase) LoginUser(ctx context.Context, email, password string) (*a
 	return user, nil
 }
 
-func (u *AuthUseCase) Me(ctx context.Context, email string) (*dto.UserResponse, error) {
+func (u *AuthUseCase) Me(ctx context.Context, email string) (*dto.RegisterRequest, error) {
 	user, err := u.repo.FindByEmail(ctx, email)
 	if err != nil {
 		return nil, err
@@ -54,29 +54,46 @@ func (u *AuthUseCase) Me(ctx context.Context, email string) (*dto.UserResponse, 
 	if user == nil {
 		return nil, errors.New("user not found")
 	}
-	userReponse := &dto.UserResponse{
-		ID:    user.ID,
-		Name:  user.Name,
-		Email: user.Email,
-		Role:  user.Role,
-	}
-	return userReponse, nil
-}
-
-func (u *AuthUseCase) UpdateMe(ctx context.Context, email string) (*dto.RegisterRequest, error) {
-	user, err := u.repo.FindByEmail(ctx, email)
-	if err != nil {
-		return nil, err
-	}
-	if user == nil {
-		return nil, errors.New("user not found")
-	}
-	userUpdateReponse := &dto.RegisterRequest{
+	userReponse := &dto.RegisterRequest{
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
 	}
-	return userUpdateReponse, nil
+	return userReponse, nil
+}
+
+func (u *AuthUseCase) UpdateMe(ctx context.Context, user *auth.Auth) (*dto.RegisterRequest, error) {
+	req, err := u.repo.FindByEmail(ctx, user.Email)
+	if err != nil {
+		return nil, err
+	}
+	if req == nil {
+		return nil, errors.New("user not found")
+	}
+
+	hashedPassword, err := utils.HashPassword(user.Password)
+	if err != nil {
+		return nil, err
+	}
+
+	userUpdateReponse := &auth.Auth{
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: hashedPassword,
+	}
+
+	putData, err := u.repo.UpdateMe(ctx, userUpdateReponse)
+	if err != nil {
+		return nil, err
+	}
+
+	dataToRegist := &dto.RegisterRequest{
+		Name:     putData.Name,
+		Email:    putData.Email,
+		Password: putData.Password,
+	}
+
+	return dataToRegist, nil
 }
 
 func (u *AuthUseCase) GetUserByID(ctx context.Context, id uint) (*auth.Auth, error) {
