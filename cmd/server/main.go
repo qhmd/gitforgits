@@ -40,12 +40,15 @@ func main() {
 	database.RunMigration(db)
 	repoBook := repo.NewMySQLBookRepository(db)
 	repoAuth := repo.NewMySQLAuthRepository(db)
+	repoUsers := repo.NewUserMySqlRepo(db)
 
 	ucBook := useCase.NewBookUsecase(repoBook)
 	ucAuth := useCase.NewAuthUsecase(repoAuth)
+	ucUsers := useCase.NewUsersUseCase(repoUsers)
 
 	app.Get("/swagger/*", swagger.HandlerDefault)
 	handler.NewBookHandler(app, ucBook)
 	handler.NewAuthHandler(app, ucAuth)
+	handler.NewHandlerUser(app, ucUsers)
 	app.Listen(":8080")
 }

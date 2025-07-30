@@ -29,7 +29,10 @@ func (m *mysqlAuthRepository) UpdateMe(ctx context.Context, user *auth.Auth) (*a
 
 // DeleteUser implements auth.AuthRepository.
 func (m *mysqlAuthRepository) DeleteUser(ctx context.Context, id uint) error {
-	panic("unimplemented")
+	if err := m.db.WithContext(ctx).Delete(&auth.Auth{}, id); err != nil {
+		return err.Error
+	}
+	return nil
 }
 
 // ListUser implements auth.AuthRepository.

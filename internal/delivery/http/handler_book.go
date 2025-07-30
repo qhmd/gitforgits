@@ -30,7 +30,7 @@ func NewBookHandler(app *fiber.App, uc *usecase.BookUseCase) {
 // @Tags Books
 // @Accept json
 // @Produce json
-// @Success 200 {array} bukuStruct.Book
+// @Success 200 {array} dto.SuccessGetListBook
 // @Failure 500 {object} dto.ErrorResponse
 // @Router /books [get]
 func (h *BookHandler) ListBook(c *fiber.Ctx) error {
@@ -38,7 +38,10 @@ func (h *BookHandler) ListBook(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
 	}
-	return c.JSON(books)
+	return c.Status(200).JSON(fiber.Map{
+		"message": "successfully get list book",
+		"data":    books,
+	})
 }
 
 // GetBookByID godoc
@@ -48,7 +51,7 @@ func (h *BookHandler) ListBook(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param id path int true "Book ID"
-// @Success 200 {object} bukuStruct.Book
+// @Success 200 {object} dto.SuccessGetBook
 // @Failure 404 {object} dto.BookNotFoundResponse
 // @Router /books/{id} [get]
 func (h *BookHandler) GetBookByID(c *fiber.Ctx) error {
@@ -57,7 +60,10 @@ func (h *BookHandler) GetBookByID(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(404).JSON(fiber.Map{"error": "books not found"})
 	}
-	return c.JSON(book)
+	return c.Status(200).JSON(fiber.Map{
+		"message": "successfully get the book",
+		"data":    book,
+	})
 }
 
 // Create godoc
@@ -68,7 +74,7 @@ func (h *BookHandler) GetBookByID(c *fiber.Ctx) error {
 // @Produce json
 // @Security BearerAuth
 // @Param book body dto.BookRequest true "Book data"
-// @Success 201 {object} bukuStruct.Book
+// @Success 201 {object} dto.SuccessfullCreate
 // @Failure 409 {object} dto.TitleAlreadytaken
 // @Failure 400 {object} dto.MissingAuthorization
 // @Failure 500 {object} dto.ErrorResponse
@@ -87,7 +93,11 @@ func (h *BookHandler) Create(c *fiber.Ctx) error {
 		}
 		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
 	}
-	return c.Status(201).JSON(book)
+	return c.Status(201).JSON(
+		fiber.Map{
+			"message": "successfully add the book",
+			"data":    book,
+		})
 }
 
 // Update godoc

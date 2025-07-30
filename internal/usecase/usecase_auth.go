@@ -98,6 +98,10 @@ func (u *AuthUseCase) UpdateMe(ctx context.Context, user *auth.Auth) (*dto.Regis
 	return dataToRegist, nil
 }
 
+func (u *AuthUseCase) DeleteUserByID(ctx context.Context, id uint) (*auth.Auth, error) {
+	return u.repo.GetUserByID(ctx, id)
+}
+
 func (u *AuthUseCase) GetUserByID(ctx context.Context, id uint) (*auth.Auth, error) {
 	return u.repo.GetUserByID(ctx, id)
 }
