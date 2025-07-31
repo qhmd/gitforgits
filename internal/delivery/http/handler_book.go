@@ -6,9 +6,10 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/qhmd/gitforgits/config"
 	bukuStruct "github.com/qhmd/gitforgits/internal/domain/book"
-	"github.com/qhmd/gitforgits/internal/dto"
+	"github.com/qhmd/gitforgits/internal/dto/book"
 	"github.com/qhmd/gitforgits/internal/middleware"
 	"github.com/qhmd/gitforgits/internal/usecase"
+	"github.com/qhmd/gitforgits/utils"
 )
 
 type BookHandler struct {
@@ -30,18 +31,15 @@ func NewBookHandler(app *fiber.App, uc *usecase.BookUseCase) {
 // @Tags Books
 // @Accept json
 // @Produce json
-// @Success 200 {array} dto.SuccessGetListBook
-// @Failure 500 {object} dto.ErrorResponse
+// @Success 200 {array} book.SuccessGetListBook
+// @Failure 500 {object} book.ErrorResponse
 // @Router /books [get]
 func (h *BookHandler) ListBook(c *fiber.Ctx) error {
 	books, err := h.Usecase.List(c.Context())
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "something went wrong", nil)
 	}
-	return c.Status(200).JSON(fiber.Map{
-		"message": "successfully get list book",
-		"data":    books,
-	})
+	return utils.SuccessResponse(c, fiber.StatusOK, "successfully get list book", books)
 }
 
 // GetBookByID godoc
@@ -51,19 +49,16 @@ func (h *BookHandler) ListBook(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param id path int true "Book ID"
-// @Success 200 {object} dto.SuccessGetBook
-// @Failure 404 {object} dto.BookNotFoundResponse
+// @Success 200 {object} book.SuccessGetBook
+// @Failure 404 {object} book.BookNotFoundResponse
 // @Router /books/{id} [get]
 func (h *BookHandler) GetBookByID(c *fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Params("id"))
 	book, err := h.Usecase.GetByID(c.Context(), id)
 	if err != nil {
-		return c.Status(404).JSON(fiber.Map{"error": "books not found"})
+		return utils.ErrorResponse(c, fiber.StatusNotFound, "books not found", nil)
 	}
-	return c.Status(200).JSON(fiber.Map{
-		"message": "successfully get the book",
-		"data":    book,
-	})
+	return utils.SuccessResponse(c, fiber.StatusOK, "successfully get the book", book)
 }
 
 // Create godoc
@@ -73,15 +68,15 @@ func (h *BookHandler) GetBookByID(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
-// @Param book body dto.BookRequest true "Book data"
-// @Success 201 {object} dto.SuccessfullCreate
-// @Failure 409 {object} dto.TitleAlreadytaken
-// @Failure 400 {object} dto.MissingAuthorization
-// @Failure 500 {object} dto.ErrorResponse
+// @Param book body book.BookRequest true "Book data"
+// @Success 201 {object} book.SuccessfullCreate
+// @Failure 409 {object} book.TitleAlreadytaken
+// @Failure 400 {object} book.MissingAuthorization
+// @Failure 500 {object} book.ErrorResponse
 // @Security ApiKeyAuth
 // @Router /books [post]
 func (h *BookHandler) Create(c *fiber.Ctx) error {
-	req := c.Locals("validateBook").(dto.BookRequest)
+	req := c.Locals("validateBook").(book.BookRequest)
 	book := &bukuStruct.Book{
 		Title:  req.Title,
 		Author: req.Author,
@@ -89,15 +84,11 @@ func (h *BookHandler) Create(c *fiber.Ctx) error {
 	}
 	if err := h.Usecase.Create(c.Context(), book); err != nil {
 		if err == config.ErrBookTitleExists {
-			return c.Status(409).JSON(fiber.Map{"error": err.Error()})
+			return utils.ErrorResponse(c, fiber.StatusConflict, "title already exits, choose antoher title", config.ErrBookTitleExists)
 		}
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "something went wrong", nil)
 	}
-	return c.Status(201).JSON(
-		fiber.Map{
-			"message": "successfully add the book",
-			"data":    book,
-		})
+	return utils.SuccessResponse(c, fiber.StatusCreated, "successfully add the book", book)
 }
 
 // Update godoc
@@ -108,23 +99,23 @@ func (h *BookHandler) Create(c *fiber.Ctx) error {
 // @Produce json
 // @Security BearerAuth
 // @Param id path int true "Book ID"
-// @Param book body dto.BookRequest true "Updated book data"
-// @Success 200 {object} dto.SuccessfullUpdate
-// @Failure 400 {object} dto.InvalidId
-// @Failure 404 {object} dto.BookNotFoundResponse
-// @Failure 409 {object} dto.ErrorResponse
-// @Failure 500 {object} dto.ErrorResponse
+// @Param book body book.BookRequest true "Updated book data"
+// @Success 200 {object} book.SuccessfullUpdate
+// @Failure 400 {object} book.InvalidId
+// @Failure 404 {object} book.BookNotFoundResponse
+// @Failure 409 {object} book.ErrorResponse
+// @Failure 500 {object} book.ErrorResponse
 // @Security ApiKeyAuth
 // @Router /books/{id} [put]
 func (h *BookHandler) Update(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "invalid id"})
+		return utils.ErrorResponse(c, fiber.StatusBadRequest, "invalid id", err)
 	}
-	req := c.Locals("validateBook").(dto.BookRequest)
+	req := c.Locals("validateBook").(book.BookRequest)
 	existing, err := h.Usecase.GetByID(c.Context(), id)
 	if err != nil {
-		return c.Status(404).JSON(fiber.Map{"error": "book not found"})
+		return utils.ErrorResponse(c, fiber.StatusNotFound, "book not found", err)
 	}
 	existing.Title = req.Title
 	existing.Author = req.Author
@@ -132,16 +123,11 @@ func (h *BookHandler) Update(c *fiber.Ctx) error {
 
 	if err := h.Usecase.Update(c.Context(), existing); err != nil {
 		if err == config.ErrBookTitleExists {
-			return c.Status(409).JSON(fiber.Map{"error": err.Error()})
+			return utils.ErrorResponse(c, fiber.StatusConflict, "choose another title", err.Error())
 		}
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "status went wrong", err.Error())
 	}
-
-	return c.Status(200).JSON(fiber.Map{
-		"message": "update successfully",
-		"data":    existing,
-	})
-
+	return utils.SuccessResponse(c, fiber.StatusOK, "update successfully", existing)
 }
 
 // Delete godoc
@@ -152,23 +138,24 @@ func (h *BookHandler) Update(c *fiber.Ctx) error {
 // @Produce json
 // @Security BearerAuth
 // @Param id path int true "Book ID"
-// @Success 200 {object} dto.DeleteSuccesfullu
-// @Failure 400 {object} dto.InvalidId
-// @Failure 404 {object} dto.BookNotFoundResponse
+// @Success 200 {object} book.DeleteSuccesfully
+// @Failure 400 {object} book.InvalidId
+// @Failure 404 {object} book.BookNotFoundResponse
+// @Failure 500 {object} book.ErrorResponse
 // @Router /books/{id} [delete]
 func (h *BookHandler) Delete(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 
 	if err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "invalid id"})
+		return utils.ErrorResponse(c, fiber.StatusBadRequest, "invalid id", err)
 	}
 	_, err = h.Usecase.GetByID(c.Context(), id)
 	if err != nil {
-		return c.Status(404).JSON(fiber.Map{"error": "book not found"})
+		return utils.ErrorResponse(c, fiber.StatusBadRequest, "book with id {id} does not exist", "book not found")
 	}
 	err = h.Usecase.Delete(c.Context(), id)
 	if err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
+		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "something went wrong", nil)
 	}
-	return c.Status(200).JSON(fiber.Map{"message": "delete successfully"})
+	return utils.SuccessResponse(c, fiber.StatusOK, "delete successfully", nil)
 }

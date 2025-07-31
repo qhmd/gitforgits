@@ -5,7 +5,7 @@ import (
 
 	"github.com/qhmd/gitforgits/internal/domain/auth"
 	"github.com/qhmd/gitforgits/internal/domain/user"
-	"github.com/qhmd/gitforgits/internal/dto"
+	authDto "github.com/qhmd/gitforgits/internal/dto/auth"
 	"github.com/qhmd/gitforgits/utils"
 )
 
@@ -25,13 +25,13 @@ func (uc *UsersUseCase) GetUserByID(ctx context.Context, id int) (*auth.Auth, er
 	return uc.repo.GetUser(ctx, id)
 }
 
-func (uc *UsersUseCase) UpdateUser(ctx context.Context, user *dto.UserResponse, id int) (*dto.UserResponse, error) {
+func (uc *UsersUseCase) UpdateUser(ctx context.Context, user *authDto.UserResponse, id int) (*authDto.UserResponse, error) {
 	pw, err := utils.HashPassword(user.Password)
 	if err != nil {
 		return nil, err
 	}
-	data := &dto.UserResponse{
-		RegisterRequest: dto.RegisterRequest{
+	data := &authDto.UserResponse{
+		RegisterRequest: authDto.RegisterRequest{
 			Name:     user.Name,
 			Email:    user.Email,
 			Password: pw,

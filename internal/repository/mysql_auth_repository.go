@@ -5,6 +5,8 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/go-sql-driver/mysql"
+	"github.com/qhmd/gitforgits/config"
 	"github.com/qhmd/gitforgits/internal/domain/auth"
 	"gorm.io/gorm"
 )
@@ -22,6 +24,11 @@ func NewMySQLAuthRepository(db *gorm.DB) auth.AuthRepository {
 func (m *mysqlAuthRepository) UpdateMe(ctx context.Context, user *auth.Auth) (*auth.Auth, error) {
 	fmt.Print("isi semuanya ", user)
 	if err := m.db.WithContext(ctx).Model(user).Where("id = ?", &user.ID).Updates(user).Error; err != nil {
+		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
+			if mysqlErr.Number == 1062 {
+				return nil, config.ErrUserExists
+			}
+		}
 		return nil, err
 	}
 	return user, nil

@@ -1,11 +1,13 @@
 package http
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/qhmd/gitforgits/internal/dto"
+	"github.com/qhmd/gitforgits/config"
+	authDto "github.com/qhmd/gitforgits/internal/dto/auth"
 	"github.com/qhmd/gitforgits/internal/middleware"
 	"github.com/qhmd/gitforgits/internal/usecase"
 )
@@ -53,7 +55,7 @@ func (h *UserHandler) UpdateUsers(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "invalid id"})
 	}
-	user := c.Locals("validateUser").(dto.UserResponse)
+	user := c.Locals("validateUser").(authDto.UserResponse)
 
 	_, err = h.uc.GetUserByID(c.Context(), id)
 	fmt.Print(err)
@@ -63,6 +65,11 @@ func (h *UserHandler) UpdateUsers(c *fiber.Ctx) error {
 
 	updateUser, err := h.uc.UpdateUser(c.Context(), &user, id)
 	if err != nil {
+		if errors.Is(err, config.ErrUserExists) {
+			return c.Status(409).JSON(fiber.Map{
+				"error": config.ErrUserExists,
+			})
+		}
 		return c.Status(500).JSON(fiber.Map{"error": "something went wrong"})
 	}
 	fmt.Print("updated user : ", updateUser)

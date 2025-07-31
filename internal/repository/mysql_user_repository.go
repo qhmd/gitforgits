@@ -4,9 +4,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/go-sql-driver/mysql"
+	"github.com/qhmd/gitforgits/config"
 	"github.com/qhmd/gitforgits/internal/domain/auth"
 	"github.com/qhmd/gitforgits/internal/domain/user"
-	"github.com/qhmd/gitforgits/internal/dto"
+	authDto "github.com/qhmd/gitforgits/internal/dto/auth"
 	"gorm.io/gorm"
 )
 
@@ -47,9 +49,13 @@ func (m *mysqlUserRepository) ListUser(ctx context.Context) ([]*auth.Auth, error
 }
 
 // UpdateUser implements user.UserRepository.
-func (m *mysqlUserRepository) UpdateUser(ctx context.Context, users *dto.UserResponse, id int) (*dto.UserResponse, error) {
+func (m *mysqlUserRepository) UpdateUser(ctx context.Context, users *authDto.UserResponse, id int) (*authDto.UserResponse, error) {
 	if err := m.db.WithContext(ctx).Model(&auth.Auth{}).Where("id = ?", id).Updates(&users).Error; err != nil {
-		fmt.Print("errror : ", err)
+		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
+			if mysqlErr.Number == 1062 {
+				return nil, config.ErrUserExists
+			}
+		}
 		return nil, err
 	}
 	fmt.Print("isi dari user di mysql", users)

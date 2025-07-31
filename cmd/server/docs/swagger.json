@@ -8,6 +8,186 @@
         "version": "1.0"
     },
     "paths": {
+        "/auth/login": {
+            "post": {
+                "description": "Login Account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Login Account",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.SuccessLogin"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.ErrorResponseLogin"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "description": "Logout from account users",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Logout Account",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.SuccessLogin"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/me": {
+            "get": {
+                "description": "Account User to see their data",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Me Account",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.SuccessLogin"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.ErrorResponseAuth"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/me/update": {
+            "post": {
+                "description": "Update user account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Update Account",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.SuccessUpdate"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.ErrorUnauthorized"
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.ErrorResponseLogin"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.ErrorResponseAuth"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/refresh": {
+            "post": {
+                "description": "get access token in the token expired",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "get access token",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.SuccessAccessToken"
+                        }
+                    },
+                    "401": {
+                        "description": "Unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.ErrorUnauthorized"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/register": {
+            "post": {
+                "description": "Create Account with Register",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "Create Account",
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.SuccessRegis"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.ErrorResponseAuth"
+                        }
+                    }
+                }
+            }
+        },
         "/books": {
             "get": {
                 "description": "Retrieve all books from the database",
@@ -27,14 +207,14 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_domain_book.Book"
+                                "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.SuccessGetListBook"
                             }
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto.ErrorResponse"
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.ErrorResponse"
                         }
                     }
                 }
@@ -66,7 +246,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto.BookRequest"
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.BookRequest"
                         }
                     }
                 ],
@@ -74,25 +254,25 @@
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_domain_book.Book"
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.SuccessfullCreate"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto.MissingAuthorization"
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.MissingAuthorization"
                         }
                     },
                     "409": {
                         "description": "Conflict",
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto.TitleAlreadytaken"
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.TitleAlreadytaken"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto.ErrorResponse"
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.ErrorResponse"
                         }
                     }
                 }
@@ -124,13 +304,13 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_domain_book.Book"
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.SuccessGetBook"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto.BookNotFoundResponse"
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.BookNotFoundResponse"
                         }
                     }
                 }
@@ -169,7 +349,7 @@
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto.BookRequest"
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.BookRequest"
                         }
                     }
                 ],
@@ -177,31 +357,31 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto.SuccessfullUpdate"
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.SuccessfullUpdate"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto.InvalidId"
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.InvalidId"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto.BookNotFoundResponse"
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.BookNotFoundResponse"
                         }
                     },
                     "409": {
                         "description": "Conflict",
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto.ErrorResponse"
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto.ErrorResponse"
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.ErrorResponse"
                         }
                     }
                 }
@@ -236,19 +416,25 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto.DeleteSuccesfullu"
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.DeleteSuccesfully"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto.InvalidId"
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.InvalidId"
                         }
                     },
                     "404": {
                         "description": "Not Found",
                         "schema": {
-                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto.BookNotFoundResponse"
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.BookNotFoundResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_dto_book.ErrorResponse"
                         }
                     }
                 }
@@ -256,6 +442,35 @@
         }
     },
     "definitions": {
+        "github_com_qhmd_gitforgits_internal_domain_auth.Auth": {
+            "type": "object",
+            "properties": {
+                "createdAt": {
+                    "type": "string"
+                },
+                "deletedAt": {
+                    "$ref": "#/definitions/gorm.DeletedAt"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "password": {
+                    "type": "string"
+                },
+                "role": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
         "github_com_qhmd_gitforgits_internal_domain_book.Book": {
             "type": "object",
             "properties": {
@@ -285,16 +500,132 @@
                 }
             }
         },
-        "github_com_qhmd_gitforgits_internal_dto.BookNotFoundResponse": {
+        "github_com_qhmd_gitforgits_internal_dto_auth.ErrorResponseAuth": {
             "type": "object",
             "properties": {
                 "error": {
                     "type": "string",
-                    "example": "book not found"
+                    "example": "something went wrong"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": false
                 }
             }
         },
-        "github_com_qhmd_gitforgits_internal_dto.BookRequest": {
+        "github_com_qhmd_gitforgits_internal_dto_auth.ErrorResponseLogin": {
+            "type": "object",
+            "properties": {
+                "error": {
+                    "type": "string",
+                    "example": "email already used"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "try another email"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "github_com_qhmd_gitforgits_internal_dto_auth.ErrorUnauthorized": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "missing refresh token"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "github_com_qhmd_gitforgits_internal_dto_auth.SuccessAccessToken": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "type": "string",
+                    "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hZGRla2U0N..."
+                },
+                "message": {
+                    "type": "string",
+                    "example": "success to access token"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "github_com_qhmd_gitforgits_internal_dto_auth.SuccessLogin": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_domain_auth.Auth"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "success to login"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "github_com_qhmd_gitforgits_internal_dto_auth.SuccessRegis": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_domain_auth.Auth"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "successfull created"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "github_com_qhmd_gitforgits_internal_dto_auth.SuccessUpdate": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_domain_auth.Auth"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "updated successfully"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "github_com_qhmd_gitforgits_internal_dto_book.BookNotFoundResponse": {
+            "type": "object",
+            "properties": {
+                "errors": {
+                    "type": "string",
+                    "example": "book with id {id} does not exist"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "book not found"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": false
+                }
+            }
+        },
+        "github_com_qhmd_gitforgits_internal_dto_book.BookRequest": {
             "type": "object",
             "required": [
                 "author",
@@ -318,43 +649,111 @@
                 }
             }
         },
-        "github_com_qhmd_gitforgits_internal_dto.DeleteSuccesfullu": {
+        "github_com_qhmd_gitforgits_internal_dto_book.DeleteSuccesfully": {
             "type": "object",
             "properties": {
-                "error": {
+                "message": {
                     "type": "string",
                     "example": "delete successfully"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },
-        "github_com_qhmd_gitforgits_internal_dto.ErrorResponse": {
+        "github_com_qhmd_gitforgits_internal_dto_book.ErrorResponse": {
             "type": "object",
             "properties": {
                 "error": {
                     "type": "string",
                     "example": "something went wrong"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": false
                 }
             }
         },
-        "github_com_qhmd_gitforgits_internal_dto.InvalidId": {
+        "github_com_qhmd_gitforgits_internal_dto_book.InvalidId": {
             "type": "object",
             "properties": {
                 "error": {
                     "type": "string",
                     "example": "Invalid id"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Your id is invalid"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": false
                 }
             }
         },
-        "github_com_qhmd_gitforgits_internal_dto.MissingAuthorization": {
+        "github_com_qhmd_gitforgits_internal_dto_book.MissingAuthorization": {
             "type": "object",
             "properties": {
                 "error": {
                     "type": "string",
                     "example": "missing authorization header"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": false
                 }
             }
         },
-        "github_com_qhmd_gitforgits_internal_dto.SuccessfullUpdate": {
+        "github_com_qhmd_gitforgits_internal_dto_book.SuccessGetBook": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_domain_book.Book"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "successfully get the book"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "github_com_qhmd_gitforgits_internal_dto_book.SuccessGetListBook": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_domain_book.Book"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "successfully get list book"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "github_com_qhmd_gitforgits_internal_dto_book.SuccessfullCreate": {
+            "type": "object",
+            "properties": {
+                "data": {
+                    "$ref": "#/definitions/github_com_qhmd_gitforgits_internal_domain_book.Book"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "successfully add the book"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
+                }
+            }
+        },
+        "github_com_qhmd_gitforgits_internal_dto_book.SuccessfullUpdate": {
             "type": "object",
             "properties": {
                 "data": {
@@ -363,15 +762,27 @@
                 "message": {
                     "type": "string",
                     "example": "update successfully"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": true
                 }
             }
         },
-        "github_com_qhmd_gitforgits_internal_dto.TitleAlreadytaken": {
+        "github_com_qhmd_gitforgits_internal_dto_book.TitleAlreadytaken": {
             "type": "object",
             "properties": {
                 "error": {
                     "type": "string",
-                    "example": "Email already taken"
+                    "example": "book with this title already exists"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Title already exist, choose another titile"
+                },
+                "success": {
+                    "type": "boolean",
+                    "example": false
                 }
             }
         },

@@ -1,4 +1,23 @@
 definitions:
+  github_com_qhmd_gitforgits_internal_domain_auth.Auth:
+    properties:
+      createdAt:
+        type: string
+      deletedAt:
+        $ref: '#/definitions/gorm.DeletedAt'
+      email:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      password:
+        type: string
+      role:
+        type: string
+      updatedAt:
+        type: string
+    type: object
   github_com_qhmd_gitforgits_internal_domain_book.Book:
     properties:
       author:
@@ -19,13 +38,94 @@ definitions:
       updatedAt:
         type: string
     type: object
-  github_com_qhmd_gitforgits_internal_dto.BookNotFoundResponse:
+  github_com_qhmd_gitforgits_internal_dto_auth.ErrorResponseAuth:
     properties:
       error:
+        example: something went wrong
+        type: string
+      success:
+        example: false
+        type: boolean
+    type: object
+  github_com_qhmd_gitforgits_internal_dto_auth.ErrorResponseLogin:
+    properties:
+      error:
+        example: email already used
+        type: string
+      message:
+        example: try another email
+        type: string
+      success:
+        example: false
+        type: boolean
+    type: object
+  github_com_qhmd_gitforgits_internal_dto_auth.ErrorUnauthorized:
+    properties:
+      message:
+        example: missing refresh token
+        type: string
+      success:
+        example: false
+        type: boolean
+    type: object
+  github_com_qhmd_gitforgits_internal_dto_auth.SuccessAccessToken:
+    properties:
+      data:
+        example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hZGRla2U0N...
+        type: string
+      message:
+        example: success to access token
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
+  github_com_qhmd_gitforgits_internal_dto_auth.SuccessLogin:
+    properties:
+      data:
+        $ref: '#/definitions/github_com_qhmd_gitforgits_internal_domain_auth.Auth'
+      message:
+        example: success to login
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
+  github_com_qhmd_gitforgits_internal_dto_auth.SuccessRegis:
+    properties:
+      data:
+        $ref: '#/definitions/github_com_qhmd_gitforgits_internal_domain_auth.Auth'
+      message:
+        example: successfull created
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
+  github_com_qhmd_gitforgits_internal_dto_auth.SuccessUpdate:
+    properties:
+      data:
+        $ref: '#/definitions/github_com_qhmd_gitforgits_internal_domain_auth.Auth'
+      message:
+        example: updated successfully
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
+  github_com_qhmd_gitforgits_internal_dto_book.BookNotFoundResponse:
+    properties:
+      errors:
+        example: book with id {id} does not exist
+        type: string
+      message:
         example: book not found
         type: string
+      success:
+        example: false
+        type: boolean
     type: object
-  github_com_qhmd_gitforgits_internal_dto.BookRequest:
+  github_com_qhmd_gitforgits_internal_dto_book.BookRequest:
     properties:
       author:
         example: John Smith
@@ -43,43 +143,100 @@ definitions:
     - page
     - title
     type: object
-  github_com_qhmd_gitforgits_internal_dto.DeleteSuccesfullu:
+  github_com_qhmd_gitforgits_internal_dto_book.DeleteSuccesfully:
     properties:
-      error:
+      message:
         example: delete successfully
         type: string
+      success:
+        example: true
+        type: boolean
     type: object
-  github_com_qhmd_gitforgits_internal_dto.ErrorResponse:
+  github_com_qhmd_gitforgits_internal_dto_book.ErrorResponse:
     properties:
       error:
         example: something went wrong
         type: string
+      success:
+        example: false
+        type: boolean
     type: object
-  github_com_qhmd_gitforgits_internal_dto.InvalidId:
+  github_com_qhmd_gitforgits_internal_dto_book.InvalidId:
     properties:
       error:
         example: Invalid id
         type: string
+      message:
+        example: Your id is invalid
+        type: string
+      success:
+        example: false
+        type: boolean
     type: object
-  github_com_qhmd_gitforgits_internal_dto.MissingAuthorization:
+  github_com_qhmd_gitforgits_internal_dto_book.MissingAuthorization:
     properties:
       error:
         example: missing authorization header
         type: string
+      success:
+        example: false
+        type: boolean
     type: object
-  github_com_qhmd_gitforgits_internal_dto.SuccessfullUpdate:
+  github_com_qhmd_gitforgits_internal_dto_book.SuccessGetBook:
+    properties:
+      data:
+        $ref: '#/definitions/github_com_qhmd_gitforgits_internal_domain_book.Book'
+      message:
+        example: successfully get the book
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
+  github_com_qhmd_gitforgits_internal_dto_book.SuccessGetListBook:
+    properties:
+      data:
+        $ref: '#/definitions/github_com_qhmd_gitforgits_internal_domain_book.Book'
+      message:
+        example: successfully get list book
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
+  github_com_qhmd_gitforgits_internal_dto_book.SuccessfullCreate:
+    properties:
+      data:
+        $ref: '#/definitions/github_com_qhmd_gitforgits_internal_domain_book.Book'
+      message:
+        example: successfully add the book
+        type: string
+      success:
+        example: true
+        type: boolean
+    type: object
+  github_com_qhmd_gitforgits_internal_dto_book.SuccessfullUpdate:
     properties:
       data:
         $ref: '#/definitions/github_com_qhmd_gitforgits_internal_domain_book.Book'
       message:
         example: update successfully
         type: string
+      success:
+        example: true
+        type: boolean
     type: object
-  github_com_qhmd_gitforgits_internal_dto.TitleAlreadytaken:
+  github_com_qhmd_gitforgits_internal_dto_book.TitleAlreadytaken:
     properties:
       error:
-        example: Email already taken
+        example: book with this title already exists
         type: string
+      message:
+        example: Title already exist, choose another titile
+        type: string
+      success:
+        example: false
+        type: boolean
     type: object
   gorm.DeletedAt:
     properties:
@@ -96,6 +253,124 @@ info:
   title: GitForGits API
   version: "1.0"
 paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Login Account
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.SuccessLogin'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.ErrorResponseLogin'
+      summary: Login Account
+      tags:
+      - Auth
+  /auth/logout:
+    post:
+      consumes:
+      - application/json
+      description: Logout from account users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.SuccessLogin'
+      summary: Logout Account
+      tags:
+      - Auth
+  /auth/me:
+    get:
+      consumes:
+      - application/json
+      description: Account User to see their data
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.SuccessLogin'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.ErrorResponseAuth'
+      summary: Me Account
+      tags:
+      - Auth
+  /auth/me/update:
+    post:
+      consumes:
+      - application/json
+      description: Update user account
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.SuccessUpdate'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.ErrorUnauthorized'
+        "409":
+          description: Conflict
+          schema:
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.ErrorResponseLogin'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.ErrorResponseAuth'
+      summary: Update Account
+      tags:
+      - Auth
+  /auth/refresh:
+    post:
+      consumes:
+      - application/json
+      description: get access token in the token expired
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.SuccessAccessToken'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.ErrorUnauthorized'
+      summary: get access token
+      tags:
+      - Auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Create Account with Register
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.SuccessRegis'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_auth.ErrorResponseAuth'
+      summary: Create Account
+      tags:
+      - Auth
   /books:
     get:
       consumes:
@@ -108,12 +383,12 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/github_com_qhmd_gitforgits_internal_domain_book.Book'
+              $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.SuccessGetListBook'
             type: array
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto.ErrorResponse'
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.ErrorResponse'
       summary: Get all books
       tags:
       - Books
@@ -127,26 +402,26 @@ paths:
         name: book
         required: true
         schema:
-          $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto.BookRequest'
+          $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.BookRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_domain_book.Book'
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.SuccessfullCreate'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto.MissingAuthorization'
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.MissingAuthorization'
         "409":
           description: Conflict
           schema:
-            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto.TitleAlreadytaken'
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.TitleAlreadytaken'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto.ErrorResponse'
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.ErrorResponse'
       security:
       - BearerAuth: []
       - ApiKeyAuth: []
@@ -170,15 +445,19 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto.DeleteSuccesfullu'
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.DeleteSuccesfully'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto.InvalidId'
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.InvalidId'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto.BookNotFoundResponse'
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.BookNotFoundResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.ErrorResponse'
       security:
       - BearerAuth: []
       summary: Delete book by ID
@@ -200,11 +479,11 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_domain_book.Book'
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.SuccessGetBook'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto.BookNotFoundResponse'
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.BookNotFoundResponse'
       summary: Get book by ID
       tags:
       - Books
@@ -224,30 +503,30 @@ paths:
         name: book
         required: true
         schema:
-          $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto.BookRequest'
+          $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.BookRequest'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto.SuccessfullUpdate'
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.SuccessfullUpdate'
         "400":
           description: Bad Request
           schema:
-            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto.InvalidId'
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.InvalidId'
         "404":
           description: Not Found
           schema:
-            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto.BookNotFoundResponse'
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.BookNotFoundResponse'
         "409":
           description: Conflict
           schema:
-            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto.ErrorResponse'
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto.ErrorResponse'
+            $ref: '#/definitions/github_com_qhmd_gitforgits_internal_dto_book.ErrorResponse'
       security:
       - BearerAuth: []
       - ApiKeyAuth: []
