@@ -36,6 +36,7 @@ func NewAuthHandler(app *fiber.App, uc *usecase.AuthUseCase) {
 // @Tags Auth
 // @Accept json
 // @Produce json
+// @Param Auth body authDto.RegisterRequest true "Create Account"
 // @Success 201 {object} authDto.SuccessRegis
 // @Failure 500 {object} authDto.ErrorResponseAuth
 // @Router /auth/register [post]
@@ -65,6 +66,7 @@ func (h *AuthHandler) Register(c *fiber.Ctx) error {
 // @Tags Auth
 // @Accept json
 // @Produce json
+// @Param Auth body authDto.LoginRequest true "Login Account"
 // @Success 201 {object} authDto.SuccessLogin
 // @Failure 409 {object} authDto.ErrorResponseLogin
 // @Router /auth/login [post]
@@ -105,6 +107,8 @@ func (h *AuthHandler) Login(c *fiber.Ctx) error {
 // @Tags Auth
 // @Accept json
 // @Produce json
+// @Security BearerAuth
+// @Security ApiKeyAuth
 // @Success 201 {object} authDto.SuccessLogin
 // @Failure 500 {object} authDto.ErrorResponseAuth
 // @Router /auth/me [Get]
@@ -124,7 +128,7 @@ func (h *AuthHandler) Me(c *fiber.Ctx) error {
 // @Tags Auth
 // @Accept json
 // @Produce json
-// @Success 200 {object} authDto.SuccessLogin
+// @Success 200 {object} authDto.SuccessLogout
 // @Router /auth/logout [Post]
 func (h *AuthHandler) Logout(c *fiber.Ctx) error {
 	c.Cookie(&fiber.Cookie{
@@ -174,6 +178,9 @@ func (h *AuthHandler) RefreshToken(c *fiber.Ctx) error {
 // @Tags Auth
 // @Accept json
 // @Produce json
+// @Security BearerAuth
+// @Security ApiKeyAuth
+// @Param Auth body authDto.RegisterRequest true "Update Account"
 // @Failure 401 {object} authDto.ErrorUnauthorized
 // @Failure 500 {object} authDto.ErrorResponseAuth
 // @Failure 409 {object} authDto.ErrorResponseLogin

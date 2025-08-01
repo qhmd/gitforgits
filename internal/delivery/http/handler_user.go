@@ -10,6 +10,7 @@ import (
 	authDto "github.com/qhmd/gitforgits/internal/dto/auth"
 	"github.com/qhmd/gitforgits/internal/middleware"
 	"github.com/qhmd/gitforgits/internal/usecase"
+	"github.com/qhmd/gitforgits/utils"
 )
 
 type UserHandler struct {
@@ -24,73 +25,111 @@ func NewHandlerUser(app *fiber.App, uc *usecase.UsersUseCase) {
 	app.Delete("admin/users/:id<^[0-9]+$>", h.DeleteUserByID)
 }
 
+// GetUserByID godoc
+// @Summary Get user by ID
+// @Description Retrieve a single user by its ID
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path int true "Users ID"
+// @Success 400 {object} users.InvalidId
+// @Success 200 {object} users.SuccessGetUser
+// @Failure 404 {object} users.UserNotFoundResponse
+// @Router /admin/users/{id} [get]
 func (h *UserHandler) GetUserByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "invalid id"})
+		return utils.ErrorResponse(c, fiber.StatusBadRequest, "invalid id", nil)
 	}
 	data, err := h.uc.GetUserByID(c.Context(), id)
 	if err != nil {
-		return c.Status(404).JSON(fiber.Map{"error": "user not found"})
+		return utils.ErrorResponse(c, fiber.StatusNotFound, "user not found", nil)
 	}
-	return c.Status(200).JSON(fiber.Map{
-		"message": "successfully find the user",
-		"data":    data,
-	})
+	return utils.SuccessResponse(c, fiber.StatusOK, "successfully get the user", data)
 }
 
+// GetListUsers godoc
+// @Summary Get List User
+// @Description Get list user
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Success 200 {array} users.SuccessGetList
+// @Failure 404 {object} users.UserNotFoundResponse
+// @Router /admin/users/ [get]
 func (h *UserHandler) GetListUsers(c *fiber.Ctx) error {
 	data, err := h.uc.ListUser(c.Context())
 	if err != nil {
-		c.Status(500).JSON(fiber.Map{"error": "something went wrong"})
+		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "something went wrong", nil)
 	}
-	return c.Status(200).JSON(fiber.Map{
-		"message": "successfully get list user",
-		"data":    data,
-	})
+	return utils.SuccessResponse(c, fiber.StatusOK, "successfully get list user", data)
 }
 
+// UpdateUsers godoc
+// @Summary Update user
+// @Description Update user
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Param Auth body users.UpdateRequest true "Update Account"
+// @Success 200 {object} users.SuccessGetList
+// @Success 400 {object} users.InvalidId
+// @Failure 404 {object} users.UserNotFoundResponse
+// @Failure 409 {object} users.EmailAlreadyUsed
+// @Failure 500 {object} users.ErrorResponse
+// @Router /admin/users/{id} [put]
 func (h *UserHandler) UpdateUsers(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "invalid id"})
+		return utils.ErrorResponse(c, fiber.StatusBadRequest, "invalid id", nil)
 	}
 	user := c.Locals("validateUser").(authDto.UserResponse)
 
 	_, err = h.uc.GetUserByID(c.Context(), id)
 	fmt.Print(err)
 	if err != nil {
-		return c.Status(404).JSON(fiber.Map{"error": "user not found"})
+		return utils.ErrorResponse(c, fiber.StatusNotFound, "user not found", nil)
+
 	}
 
 	updateUser, err := h.uc.UpdateUser(c.Context(), &user, id)
 	if err != nil {
 		if errors.Is(err, config.ErrUserExists) {
-			return c.Status(409).JSON(fiber.Map{
-				"error": config.ErrUserExists,
-			})
+			return utils.ErrorResponse(c, fiber.StatusConflict, "try another email", "email already used")
 		}
-		return c.Status(500).JSON(fiber.Map{"error": "something went wrong"})
+		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "something went wrong", nil)
 	}
 	fmt.Print("updated user : ", updateUser)
-	return c.Status(200).JSON(fiber.Map{
-		"message": "successfully update the user",
-		"data":    updateUser,
-	})
+	return utils.SuccessResponse(c, fiber.StatusOK, "successfully update the user", updateUser)
 }
 
+// DeleteUserByID godoc
+// @Summary Delete user
+// @Description Delete user by id
+// @Tags Users
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {object} users.SuccessDeleteUser
+// @Success 400 {object} users.InvalidId
+// @Failure 404 {object} users.UserNotFoundResponse
+// @Failure 500 {object} users.ErrorResponse
+// @Router /admin/users/{id} [delete]
 func (h *UserHandler) DeleteUserByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
-		return c.Status(400).JSON(fiber.Map{"error": "invalid id"})
+		return utils.ErrorResponse(c, fiber.StatusBadRequest, "invalid id", nil)
 	}
 	_, err = h.uc.GetUserByID(c.Context(), id)
 	fmt.Print(err)
 	if err != nil {
-		return c.Status(404).JSON(fiber.Map{"error": "user not found"})
+		return utils.ErrorResponse(c, fiber.StatusNotFound, "user not found", nil)
+
 	}
 	if err = h.uc.DeleteUser(c.Context(), id); err != nil {
-		return c.Status(500).JSON(fiber.Map{"error": "something went wrong"})
+		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "something went wrong", nil)
+
 	}
-	return c.Status(200).JSON(fiber.Map{"message": "successfully delete"})
+	return utils.SuccessResponse(c, fiber.StatusOK, "success delete user", nil)
 }

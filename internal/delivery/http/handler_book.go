@@ -50,7 +50,7 @@ func (h *BookHandler) ListBook(c *fiber.Ctx) error {
 // @Produce json
 // @Param id path int true "Book ID"
 // @Success 200 {object} book.SuccessGetBook
-// @Failure 404 {object} book.BookNotFoundResponse
+// @Failure 500 {object} book.ErrorResponse
 // @Router /books/{id} [get]
 func (h *BookHandler) GetBookByID(c *fiber.Ctx) error {
 	id, _ := strconv.Atoi(c.Params("id"))

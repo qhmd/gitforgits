@@ -26,7 +26,7 @@ func init() {
 //	@version		1.0
 //	@description	API documentation for project GitForGits
 //	@termsOfService	http://swagger.io/terms/
-//  @securityDefinitions.apikey BearerAuth
+//  @securityDefinitions.apikey bearer
 //  @in header
 //  @name Authorization
 
