@@ -1,7 +1,7 @@
 {
     "swagger": "2.0",
     "info": {
-        "description": "API documentation for project GitForGits",
+        "description": "API documentation for project GitForGits\nLogin as admin:\nemail: admingitforgits12@gmail.com\npassword: @GitForGitsAdmin21",
         "title": "GitForGits API",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {},
@@ -10,6 +10,14 @@
     "paths": {
         "/admin/users/": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Get list user",
                 "consumes": [
                     "application/json"
@@ -42,6 +50,14 @@
         },
         "/admin/users/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Retrieve a single user by its ID",
                 "consumes": [
                     "application/json"
@@ -84,6 +100,14 @@
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Update user",
                 "consumes": [
                     "application/json"
@@ -147,6 +171,14 @@
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    },
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
                 "description": "Delete user by id",
                 "consumes": [
                     "application/json"
@@ -1226,7 +1258,8 @@
         }
     },
     "securityDefinitions": {
-        "bearer": {
+        "BearerAuth": {
+            "description": "Type \"Bearer\" followed by a space and JWT token.",
             "type": "apiKey",
             "name": "Authorization",
             "in": "header"

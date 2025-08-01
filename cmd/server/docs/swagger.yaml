@@ -381,7 +381,11 @@ definitions:
     type: object
 info:
   contact: {}
-  description: API documentation for project GitForGits
+  description: |-
+    API documentation for project GitForGits
+    Login as admin:
+    email: admingitforgits12@gmail.com
+    password: @GitForGitsAdmin21
   termsOfService: http://swagger.io/terms/
   title: GitForGits API
   version: "1.0"
@@ -404,6 +408,9 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/users.UserNotFoundResponse'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Get List User
       tags:
       - Users
@@ -437,6 +444,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/users.ErrorResponse'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Delete user
       tags:
       - Users
@@ -465,6 +475,9 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/users.UserNotFoundResponse'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Get user by ID
       tags:
       - Users
@@ -507,6 +520,9 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/users.ErrorResponse'
+      security:
+      - BearerAuth: []
+      - ApiKeyAuth: []
       summary: Update user
       tags:
       - Users
@@ -818,7 +834,8 @@ paths:
       tags:
       - Books
 securityDefinitions:
-  bearer:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
     in: header
     name: Authorization
     type: apiKey

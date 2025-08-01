@@ -24,6 +24,7 @@ func JWT() fiber.Handler {
 		c.Locals("userID", claims["id"])
 		c.Locals("userEmail", claims["email"])
 		c.Locals("userName", claims["name"])
+		c.Locals("userRole", claims["role"])
 
 		return c.Next()
 	}

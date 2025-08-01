@@ -22,13 +22,18 @@ func init() {
 	}
 }
 
-//	@title			GitForGits API
-//	@version		1.0
-//	@description	API documentation for project GitForGits
-//	@termsOfService	http://swagger.io/terms/
-//  @securityDefinitions.apikey bearer
-//  @in header
-//  @name Authorization
+// @title           GitForGits API
+// @version         1.0
+// @description     API documentation for project GitForGits
+// @description     Login as admin:
+// @description     email: admingitforgits12@gmail.com
+// @description     password: @GitForGitsAdmin21
+// @termsOfService  http://swagger.io/terms/
+
+// @securityDefinitions.apikey  BearerAuth
+// @in                         header
+// @name                       Authorization
+// @description                Type "Bearer" followed by a space and JWT token.
 
 func main() {
 	app := fiber.New()

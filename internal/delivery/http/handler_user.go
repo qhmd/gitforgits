@@ -19,10 +19,10 @@ type UserHandler struct {
 
 func NewHandlerUser(app *fiber.App, uc *usecase.UsersUseCase) {
 	h := &UserHandler{uc: uc}
-	app.Get("/admin/users/:id<^[0-9]+$>", h.GetUserByID)
-	app.Get("/admin/users/", h.GetListUsers)
-	app.Put("/admin/users/:id<^[0-9]+$>", middleware.ValidateUserUpdate(), h.UpdateUsers)
-	app.Delete("admin/users/:id<^[0-9]+$>", h.DeleteUserByID)
+	app.Get("/admin/users/:id<^[0-9]+$>", middleware.JWT(), middleware.IsAdmin(), h.GetUserByID)
+	app.Get("/admin/users/", middleware.JWT(), middleware.IsAdmin(), h.GetListUsers)
+	app.Put("/admin/users/:id<^[0-9]+$>", middleware.JWT(), middleware.IsAdmin(), middleware.ValidateUserUpdate(), h.UpdateUsers)
+	app.Delete("admin/users/:id<^[0-9]+$>", middleware.JWT(), middleware.IsAdmin(), h.DeleteUserByID)
 }
 
 // GetUserByID godoc
@@ -31,6 +31,8 @@ func NewHandlerUser(app *fiber.App, uc *usecase.UsersUseCase) {
 // @Tags Users
 // @Accept json
 // @Produce json
+// @Security BearerAuth
+// @Security ApiKeyAuth
 // @Param id path int true "Users ID"
 // @Success 400 {object} users.InvalidId
 // @Success 200 {object} users.SuccessGetUser
@@ -54,6 +56,8 @@ func (h *UserHandler) GetUserByID(c *fiber.Ctx) error {
 // @Tags Users
 // @Accept json
 // @Produce json
+// @Security BearerAuth
+// @Security ApiKeyAuth
 // @Success 200 {array} users.SuccessGetList
 // @Failure 404 {object} users.UserNotFoundResponse
 // @Router /admin/users/ [get]
@@ -71,6 +75,8 @@ func (h *UserHandler) GetListUsers(c *fiber.Ctx) error {
 // @Tags Users
 // @Accept json
 // @Produce json
+// @Security BearerAuth
+// @Security ApiKeyAuth
 // @Param id path int true "User ID"
 // @Param Auth body users.UpdateRequest true "Update Account"
 // @Success 200 {object} users.SuccessGetList
@@ -110,6 +116,8 @@ func (h *UserHandler) UpdateUsers(c *fiber.Ctx) error {
 // @Tags Users
 // @Accept json
 // @Produce json
+// @Security BearerAuth
+// @Security ApiKeyAuth
 // @Param id path int true "User ID"
 // @Success 200 {object} users.SuccessDeleteUser
 // @Success 400 {object} users.InvalidId

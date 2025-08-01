@@ -98,6 +98,7 @@ func (h *BookHandler) Create(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Security BearerAuth
+// @Security ApiKeyAuth
 // @Param id path int true "Book ID"
 // @Param book body book.BookRequest true "Updated book data"
 // @Success 200 {object} book.SuccessfullUpdate
@@ -105,7 +106,6 @@ func (h *BookHandler) Create(c *fiber.Ctx) error {
 // @Failure 404 {object} book.BookNotFoundResponse
 // @Failure 409 {object} book.ErrorResponse
 // @Failure 500 {object} book.ErrorResponse
-// @Security ApiKeyAuth
 // @Router /books/{id} [put]
 func (h *BookHandler) Update(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))

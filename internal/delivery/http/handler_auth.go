@@ -78,8 +78,8 @@ func (h *AuthHandler) Login(c *fiber.Ctx) error {
 		return utils.ErrorResponse(c, fiber.StatusConflict, err.Error(), nil)
 
 	}
-	refreshToken, _ := utils.GenerateRefreshToken(user.ID, req.Email, user.Name)
-	accessToken, _ := utils.GenerateAccessToken(user.ID, req.Email, user.Name)
+	refreshToken, _ := utils.GenerateRefreshToken(user.ID, req.Email, user.Name, user.Role)
+	accessToken, _ := utils.GenerateAccessToken(user.ID, req.Email, user.Name, user.Role)
 
 	c.Cookie(&fiber.Cookie{
 		Name:     "refresh_token",
@@ -168,6 +168,7 @@ func (h *AuthHandler) RefreshToken(c *fiber.Ctx) error {
 		uint(claims["id"].(float64)),
 		claims["email"].(string),
 		claims["name"].(string),
+		claims["role"].(string),
 	)
 	return utils.SuccessResponse(c, fiber.StatusOK, "success to access token", accessToken)
 }
