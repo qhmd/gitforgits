@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . .
 
-WORKDIR /app/auth-service
+WORKDIR /app/users-service
 
 RUN go mod download
 

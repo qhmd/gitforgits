@@ -1,7 +1,7 @@
 
 services:
   # Service untuk aplikasi utama (Go - auth-service)
-  app:
+  authservice:
     build:
       context: .
       dockerfile: auth-service/Dockerfile
@@ -13,36 +13,97 @@ services:
     working_dir: /app/auth-service
     depends_on:
       - auth-db  # Tunggu database siap sebelum container ini jalan
-    volumes:
-      - ./auth-service/.env:/app/auth-service/.env
-      - ./shared:/app/shared
+    command: go run ./cmd/main.go
 
-  # Service untuk database MySQL
-  # auth db ini terkait nama db di env
+  userservice:
+    build:
+      context: .
+      dockerfile: users-service/Dockerfile
+    ports:
+      - "8082:8080"  # Mengekspose port container ke host
+    env_file:
+      - ./users-service/.env  # File .env khusus untuk auth-service
+    container_name: users-service
+    working_dir: /app/users-service
+    depends_on:
+      - users-db  # Tunggu database siap sebelum container ini jalan
+    command: go run ./cmd/main.go
+
+  bookservice:
+    build:
+      context: .
+      dockerfile: book-service/Dockerfile
+    ports:
+      - "8083:8080"
+    env_file:
+      - ./book-service/.env
+    container_name: book-service
+    working_dir: /app/book-service
+    depends_on:
+      - book-db
+    command: go run ./cmd/main.go
+
+
   auth-db:
     image: mysql:8
     container_name: mysql-auth-db
     restart: always
     env_file:
-      - ./auth-service/.env  # File .env khusus untuk auth-service
+      - .env  # File .env khusus untuk auth-service
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASS}  # Menggunakan variabel dari .env
       MYSQL_DATABASE: ${DB_NAME}
     ports:
       - "3307:3306"  # Host 3307 → Container 3306 (MySQL default port)
     volumes:
-      - db_data:/var/lib/mysql  # Menyimpan data MySQL secara persisten
+      - auth-db-data:/var/lib/mysql  # Menyimpan data MySQL secara persisten
+
+  users-db:
+    image: mysql:8
+    container_name: mysql-users-db
+    restart: always
+    env_file:
+      - path: .env
+        required: true 
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}  # Menggunakan variabel dari .env
+      MYSQL_DATABASE: ${DB_NAME}
+    ports:
+      - "3308:3306"  # Host 3307 → Container 3306 (MySQL default port)
+    volumes:
+      - users-db-data:/var/lib/mysql  # Menyimpan data MySQL secara persisten
+  
+  book-db:
+    image: mysql:8
+    container_name: mysql-book-db
+    restart: always
+    env_file:
+      - path: .env
+        required: true 
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}  # Menggunakan variabel dari .env
+      MYSQL_DATABASE: ${DB_NAME}
+    ports:
+      - "3309:3306"  # Host 3307 → Container 3306 (MySQL default port)
+    volumes:
+      - book-db-data:/var/lib/mysql  # Menyimpan data MySQL secara persisten
 
   # Service untuk phpMyAdmin
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     container_name: my-phpmyadmin
     restart: always
+    depends_on:
+      - auth-db
+      - users-db
+      - book-db
     environment:
-      PMA_HOST: auth-db  # Host database yang akan dihubungkan (sesuai nama service db)
+      PMA_ARBITRARY: 1  # Bisa akses banyak host database
       PMA_PORT: 3306
     ports:
       - "8081:80"  # phpMyAdmin diakses lewat http://localhost:8081
 
 volumes:
-  db_data:  # Volume untuk menyimpan data MySQL
+  auth-db-data:  # Volume untuk menyimpan data MySQL
+  users-db-data:
+  book-db-data:

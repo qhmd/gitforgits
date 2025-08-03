@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/qhmd/gitforgits/config"
+	"github.com/qhmd/gitforgits/users-service/config"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )

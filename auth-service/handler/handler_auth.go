@@ -8,8 +8,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/qhmd/gitforgits/auth-service/config"
-	authDto "github.com/qhmd/gitforgits/auth-service/dto"
 	"github.com/qhmd/gitforgits/auth-service/usecase"
+	"github.com/qhmd/gitforgits/shared/dto"
 	"github.com/qhmd/gitforgits/shared/middleware"
 	"github.com/qhmd/gitforgits/shared/models"
 	"github.com/qhmd/gitforgits/shared/utils"
@@ -30,18 +30,8 @@ func NewAuthHandler(app *fiber.App, uc *usecase.AuthUseCase) {
 	app.Post("/auth/refresh", h.RefreshToken)
 }
 
-// Register godoc
-// @Summary Create Account
-// @Description Create Account with Register
-// @Tags Auth
-// @Accept json
-// @Produce json
-// @Param Auth body authDto.RegisterRequest true "Create Account"
-// @Success 201 {object} authDto.SuccessRegis
-// @Failure 500 {object} authDto.ErrorResponseAuth
-// @Router /auth/register [post]
 func (h *AuthHandler) Register(c *fiber.Ctx) error {
-	req := c.Locals("validateAuth").(authDto.RegisterRequest)
+	req := c.Locals("validateAuth").(dto.RegisterRequest)
 
 	hashedPassword, _ := utils.HashPassword(req.Password)
 
@@ -60,18 +50,8 @@ func (h *AuthHandler) Register(c *fiber.Ctx) error {
 	return utils.SuccessResponse(c, fiber.StatusCreated, "successfull created", user)
 }
 
-// Login godoc
-// @Summary Login Account
-// @Description Login Account
-// @Tags Auth
-// @Accept json
-// @Produce json
-// @Param Auth body authDto.LoginRequest true "Login Account"
-// @Success 201 {object} authDto.SuccessLogin
-// @Failure 409 {object} authDto.ErrorResponseLogin
-// @Router /auth/login [post]
 func (h *AuthHandler) Login(c *fiber.Ctx) error {
-	req := c.Locals("validateAuth").(authDto.LoginRequest)
+	req := c.Locals("validateAuth").(dto.LoginRequest)
 
 	user, err := h.Usecase.LoginUser(c.Context(), req.Email, req.Password)
 	if err != nil {
@@ -101,17 +81,6 @@ func (h *AuthHandler) Login(c *fiber.Ctx) error {
 	return utils.SuccessResponse(c, fiber.StatusCreated, "success to login", data)
 }
 
-// Me godoc
-// @Summary Me Account
-// @Description Account User to see their data
-// @Tags Auth
-// @Accept json
-// @Produce json
-// @Security BearerAuth
-// @Security ApiKeyAuth
-// @Success 201 {object} authDto.SuccessLogin
-// @Failure 500 {object} authDto.ErrorResponseAuth
-// @Router /auth/me [Get]
 func (h *AuthHandler) Me(c *fiber.Ctx) error {
 	emailUser := c.Locals("userEmail").(string)
 	user, err := h.Usecase.Me(c.Context(), emailUser)
@@ -122,14 +91,6 @@ func (h *AuthHandler) Me(c *fiber.Ctx) error {
 
 }
 
-// Logout godoc
-// @Summary Logout Account
-// @Description Logout from account users
-// @Tags Auth
-// @Accept json
-// @Produce json
-// @Success 200 {object} authDto.SuccessLogout
-// @Router /auth/logout [Post]
 func (h *AuthHandler) Logout(c *fiber.Ctx) error {
 	c.Cookie(&fiber.Cookie{
 		Name:     "refresh_token",
@@ -142,15 +103,6 @@ func (h *AuthHandler) Logout(c *fiber.Ctx) error {
 	return utils.SuccessResponse(c, fiber.StatusOK, "success to log out", nil)
 }
 
-// RefreshToken godoc
-// @Summary get access token
-// @Description get access token in the token expired
-// @Tags Auth
-// @Accept json
-// @Produce json
-// @Failure 401 {object} authDto.ErrorUnauthorized
-// @Success 200 {object} authDto.SuccessAccessToken
-// @Router /auth/refresh [Post]
 func (h *AuthHandler) RefreshToken(c *fiber.Ctx) error {
 	refreshToken := c.Cookies("refresh_token")
 	if refreshToken == "" {
@@ -176,22 +128,8 @@ func (h *AuthHandler) RefreshToken(c *fiber.Ctx) error {
 	return utils.SuccessResponse(c, fiber.StatusOK, "success to access token", accessToken)
 }
 
-// UpdateMe godoc
-// @Summary Update Account
-// @Description Update user account
-// @Tags Auth
-// @Accept json
-// @Produce json
-// @Security BearerAuth
-// @Security ApiKeyAuth
-// @Param Auth body authDto.RegisterRequest true "Update Account"
-// @Failure 401 {object} authDto.ErrorUnauthorized
-// @Failure 500 {object} authDto.ErrorResponseAuth
-// @Failure 409 {object} authDto.ErrorResponseLogin
-// @Success 200 {object} authDto.SuccessUpdate
-// @Router /auth/me/update [Post]
 func (h *AuthHandler) UpdateMe(c *fiber.Ctx) error {
-	req := c.Locals("validateAuth").(authDto.RegisterRequest)
+	req := c.Locals("validateAuth").(dto.RegisterRequest)
 	id := uint(c.Locals("userID").(float64))
 	userData := &models.Auth{
 		Model:    gorm.Model{ID: id},

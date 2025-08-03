@@ -7,11 +7,11 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
-	"github.com/qhmd/gitforgits/book-service/handler"
-	"github.com/qhmd/gitforgits/book-service/pkg/database"
-	"github.com/qhmd/gitforgits/book-service/repo"
-	"github.com/qhmd/gitforgits/book-service/usecase"
 	"github.com/qhmd/gitforgits/shared/utils"
+	"github.com/qhmd/gitforgits/users-service/handler"
+	"github.com/qhmd/gitforgits/users-service/pkg/database"
+	"github.com/qhmd/gitforgits/users-service/repo"
+	"github.com/qhmd/gitforgits/users-service/usecase"
 )
 
 func init() {
@@ -19,6 +19,7 @@ func init() {
 		log.Fatal("Error loading .env file")
 	}
 }
+
 func main() {
 	app := fiber.New()
 	app.Use(cors.New())
@@ -27,10 +28,10 @@ func main() {
 	fmt.Print("listen in port 8080...")
 	db := database.InitMySQL()
 	database.RunMigration(db)
-	repoBook := repo.NewMySQLBookRepository(db)
+	repoUsers := repo.NewUserMySqlRepo(db)
 
-	ucBook := usecase.NewBookUsecase(repoBook)
+	ucUsers := usecase.NewUsersUseCase(repoUsers)
 
-	handler.NewBookHandler(app, ucBook)
+	handler.NewHandlerUser(app, ucUsers)
 	app.Listen(":8080")
 }

@@ -4,12 +4,11 @@ import (
 	"fmt"
 
 	"github.com/qhmd/gitforgits/book-service/model"
-	"github.com/qhmd/gitforgits/shared/models"
 	"gorm.io/gorm"
 )
 
 func RunMigration(db *gorm.DB) {
-	if err := db.AutoMigrate(&model.Book{}, &models.Auth{}); err != nil {
+	if err := db.AutoMigrate(&model.Book{}, &model.Category{}); err != nil {
 		fmt.Println("Migration gagal:", err)
 		return
 	}

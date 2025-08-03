@@ -1,13 +1,14 @@
 package users
 
-import "github.com/qhmd/gitforgits/internal/dto/book"
-
 type ErrorResponse struct {
-	*book.ErrorResponse
+	Success bool   `json:"success" example:"false"`
+	Error   string `json:"error" example:"something went wrong"`
 }
 
 type InvalidId struct {
-	*book.InvalidId
+	Success bool   `json:"success" example:"false"`
+	Message string `json:"message" example:"Your id is invalid"`
+	Errors  string `json:"error" example:"Invalid id"`
 }
 
 type UserNotFoundResponse struct {

@@ -1,15 +1,13 @@
-package http
+package handler
 
 import (
 	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
-
-	// authDto "github.com/qhmd/gitforgits/internal/dto/auth"
-	"github.com/qhmd/gitforgits/internal/middleware"
-	"github.com/qhmd/gitforgits/internal/usecase"
-	"github.com/qhmd/gitforgits/utils"
+	"github.com/qhmd/gitforgits/shared/middleware"
+	"github.com/qhmd/gitforgits/shared/utils"
+	"github.com/qhmd/gitforgits/users-service/usecase"
 )
 
 type UserHandler struct {

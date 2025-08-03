@@ -1,14 +1,14 @@
-package repository
+package repo
 
 import (
 	"context"
 	"fmt"
 
 	"github.com/go-sql-driver/mysql"
-	authDto "github.com/qhmd/gitforgits/auth-service/dto"
-	"github.com/qhmd/gitforgits/config"
-	"github.com/qhmd/gitforgits/internal/domain/user"
+	"github.com/qhmd/gitforgits/shared/dto"
 	"github.com/qhmd/gitforgits/shared/models"
+	"github.com/qhmd/gitforgits/users-service/config"
+	"github.com/qhmd/gitforgits/users-service/model"
 	"gorm.io/gorm"
 )
 
@@ -49,7 +49,7 @@ func (m *mysqlUserRepository) ListUser(ctx context.Context) ([]*models.Auth, err
 }
 
 // UpdateUser implements user.UserRepository.
-func (m *mysqlUserRepository) UpdateUser(ctx context.Context, users *authDto.UserResponse, id int) (*authDto.UserResponse, error) {
+func (m *mysqlUserRepository) UpdateUser(ctx context.Context, users *dto.UserResponse, id int) (*dto.UserResponse, error) {
 	if err := m.db.WithContext(ctx).Model(&models.Auth{}).Where("id = ?", id).Updates(&users).Error; err != nil {
 		if mysqlErr, ok := err.(*mysql.MySQLError); ok {
 			if mysqlErr.Number == 1062 {
@@ -62,6 +62,6 @@ func (m *mysqlUserRepository) UpdateUser(ctx context.Context, users *authDto.Use
 	return users, nil
 }
 
-func NewUserMySqlRepo(db *gorm.DB) user.UserRepository {
+func NewUserMySqlRepo(db *gorm.DB) model.UserRepository {
 	return &mysqlUserRepository{db: db}
 }

@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	authDto "github.com/qhmd/gitforgits/auth-service/dto"
 	"github.com/qhmd/gitforgits/auth-service/model"
 	"github.com/qhmd/gitforgits/config"
+	"github.com/qhmd/gitforgits/shared/dto"
 	"github.com/qhmd/gitforgits/shared/models"
 	"github.com/qhmd/gitforgits/utils"
 	"gorm.io/gorm"
@@ -48,7 +48,7 @@ func (u *AuthUseCase) LoginUser(ctx context.Context, email, password string) (*m
 	return user, nil
 }
 
-func (u *AuthUseCase) Me(ctx context.Context, email string) (*authDto.RegisterRequest, error) {
+func (u *AuthUseCase) Me(ctx context.Context, email string) (*dto.RegisterRequest, error) {
 	user, err := u.repo.FindByEmail(ctx, email)
 	if err != nil {
 		return nil, err
@@ -56,7 +56,7 @@ func (u *AuthUseCase) Me(ctx context.Context, email string) (*authDto.RegisterRe
 	if user == nil {
 		return nil, errors.New("user not found")
 	}
-	userReponse := &authDto.RegisterRequest{
+	userReponse := &dto.RegisterRequest{
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: user.Password,
@@ -64,7 +64,7 @@ func (u *AuthUseCase) Me(ctx context.Context, email string) (*authDto.RegisterRe
 	return userReponse, nil
 }
 
-func (u *AuthUseCase) UpdateMe(ctx context.Context, user *models.Auth) (*authDto.RegisterRequest, error) {
+func (u *AuthUseCase) UpdateMe(ctx context.Context, user *models.Auth) (*dto.RegisterRequest, error) {
 	req, err := u.repo.GetUserByID(ctx, user.ID)
 	if err != nil {
 		return nil, err
@@ -90,7 +90,7 @@ func (u *AuthUseCase) UpdateMe(ctx context.Context, user *models.Auth) (*authDto
 		return nil, err
 	}
 
-	dataToRegist := &authDto.RegisterRequest{
+	dataToRegist := &dto.RegisterRequest{
 		Name:     putData.Name,
 		Email:    putData.Email,
 		Password: putData.Password,

@@ -1,7 +1,9 @@
 package users
 
-import "github.com/qhmd/gitforgits/internal/dto/auth"
+import (
+	"github.com/qhmd/gitforgits/shared/dto"
+)
 
 type UpdateRequest struct {
-	auth.UserResponse
+	dto.UserResponse
 }

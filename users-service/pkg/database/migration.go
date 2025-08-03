@@ -3,6 +3,8 @@ package database
 import (
 	"fmt"
 
+	"github.com/qhmd/gitforgits/shared/models"
+
 	"gorm.io/gorm"
 )
 

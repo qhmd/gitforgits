@@ -1,0 +1,5 @@
+*
+!auth-service/**
+!users-service/**
+!book-service/**
+!shared/**

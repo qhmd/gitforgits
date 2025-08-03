@@ -3,8 +3,10 @@ package usecase
 import (
 	"context"
 
+	"github.com/qhmd/gitforgits/shared/dto"
+	"github.com/qhmd/gitforgits/shared/models"
+	"github.com/qhmd/gitforgits/shared/utils"
 	"github.com/qhmd/gitforgits/users-service/model"
-	"github.com/qhmd/gitforgits/utils"
 )
 
 type UsersUseCase struct {

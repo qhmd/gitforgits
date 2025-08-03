@@ -79,9 +79,18 @@ func (h *BookHandler) GetBookByID(c *fiber.Ctx) error {
 func (h *BookHandler) Create(c *fiber.Ctx) error {
 	req := c.Locals("validateBook").(book.BookRequest)
 	book := &model.Book{
-		Title:  req.Title,
-		Author: req.Author,
-		Page:   req.Page,
+		Title:       req.Title,
+		Author:      req.Author,
+		Pages:       req.Pages,
+		Publisher:   req.Publisher,
+		ReleaseDate: req.ReleaseDate,
+		Language:    req.Language,
+		Format:      req.Format,
+		Description: req.Description,
+		Price:       req.Price,
+		FileURL:     req.FileURL,
+		Thumbnail:   req.Thumbnail,
+		CategoryID:  req.CategoryID,
 	}
 	if err := h.Usecase.Create(c.Context(), book); err != nil {
 		if err == config.ErrBookTitleExists {
@@ -120,7 +129,16 @@ func (h *BookHandler) Update(c *fiber.Ctx) error {
 	}
 	existing.Title = req.Title
 	existing.Author = req.Author
-	existing.Page = req.Page
+	existing.Pages = req.Pages
+	existing.Publisher = req.Publisher
+	existing.ReleaseDate = req.ReleaseDate
+	existing.Language = req.Language
+	existing.Format = req.Format
+	existing.Description = req.Description
+	existing.Price = req.Price
+	existing.FileURL = req.FileURL
+	existing.Thumbnail = req.Thumbnail
+	existing.CategoryID = req.CategoryID
 
 	if err := h.Usecase.Update(c.Context(), existing); err != nil {
 		if err == config.ErrBookTitleExists {
