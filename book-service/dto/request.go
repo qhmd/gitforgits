@@ -2,7 +2,7 @@ package dto
 
 type BookRequest struct {
 	Title       string  `json:"title" validate:"required,min=3,max=100" example:"How To Become Backend Engineer"`
-	Author      string  `json:"author" validate:"required,min=4,max=50,alphaunicode" example:"John Smith"`
+	Author      string  `json:"author" validate:"required,min=4,max=50,alphaMin4" example:"John Smith"`
 	Publisher   string  `json:"publisher" validate:"required,min=3,max=100" example:"TechBooks Publishing"`
 	ReleaseDate string  `json:"release_date" validate:"required,datetime=2006-01-02" example:"2025-08-01"` // format YYYY-MM-DD
 	Language    string  `json:"language" validate:"required,alphaunicode" example:"English"`
@@ -13,4 +13,9 @@ type BookRequest struct {
 	FileURL     string  `json:"file_url" validate:"required,url" example:"https://example.com/files/book.pdf"`
 	Thumbnail   string  `json:"thumbnail" validate:"required,url" example:"https://example.com/images/book-cover.jpg"`
 	CategoryID  uint    `json:"category_id" validate:"required,gt=0" example:"1"`
+}
+
+type CategoryRequest struct {
+	Name string `json:"name" validate:"required,min=3,max=50,alphaunicode" example:"Technology"`
+	Slug string `json:"slug" validate:"required,min=3,max=50,alphanum" example:"technology"`
 }

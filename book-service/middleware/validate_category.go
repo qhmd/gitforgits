@@ -7,9 +7,9 @@ import (
 	"github.com/qhmd/gitforgits/shared/utils"
 )
 
-func ValidateBook() fiber.Handler {
+func ValidateCategory() fiber.Handler {
 	return func(c *fiber.Ctx) error {
-		var req dto.BookRequest
+		var req dto.CategoryRequest
 
 		if err := c.BodyParser(&req); err != nil {
 			return utils.ErrorResponse(c, fiber.StatusBadRequest, "invalid request body", err)
@@ -26,7 +26,7 @@ func ValidateBook() fiber.Handler {
 
 		}
 
-		c.Locals("validateBook", req)
+		c.Locals("validateCategory", req)
 		return c.Next()
 	}
 }

@@ -1,16 +1,18 @@
 package handler
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/qhmd/gitforgits/book-service/config"
 	book "github.com/qhmd/gitforgits/book-service/dto"
-	ValBook "github.com/qhmd/gitforgits/book-service/middleware"
+	ValLocal "github.com/qhmd/gitforgits/book-service/middleware"
 	"github.com/qhmd/gitforgits/book-service/model"
 	"github.com/qhmd/gitforgits/book-service/usecase"
-	"github.com/qhmd/gitforgits/config"
 	"github.com/qhmd/gitforgits/shared/middleware"
 	"github.com/qhmd/gitforgits/shared/utils"
+	"gorm.io/gorm"
 )
 
 type BookHandler struct {
@@ -20,10 +22,15 @@ type BookHandler struct {
 func NewBookHandler(app *fiber.App, uc *usecase.BookUseCase) {
 	h := &BookHandler{Usecase: uc}
 	app.Get("/books", h.ListBook)
-	app.Get("/books/:id<^[0-9]+$>", h.GetBookByID)
-	app.Post("/books", middleware.JWT(), ValBook.ValidateBook(), h.Create)
-	app.Delete("/books/:id<^[0-9]+$>", h.Delete)
-	app.Put("/books/:id<^[0-9]+$>", ValBook.ValidateBook(), h.Update)
+	app.Get("/books/:id<int>", h.GetBookByID)
+	app.Post("/books", middleware.JWT(), ValLocal.ValidateBook(), h.Create)
+	app.Put("/books/:id<int>", ValLocal.ValidateBook(), h.Update)
+	app.Delete("/books/:id<int>", h.Delete)
+
+	app.Delete("/books/category/:id<int>", h.DeleteCategory)
+	app.Get("/books/category", h.ListCategory)
+	app.Post("/books/category", ValLocal.ValidateCategory(), h.CreateCategory)
+	app.Put("/books/category/:id<int>", ValLocal.ValidateCategory(), h.UpdateCategory)
 }
 
 // ListBook godoc
@@ -54,7 +61,10 @@ func (h *BookHandler) ListBook(c *fiber.Ctx) error {
 // @Failure 500 {object} book.ErrorResponse
 // @Router /books/{id} [get]
 func (h *BookHandler) GetBookByID(c *fiber.Ctx) error {
-	id, _ := strconv.Atoi(c.Params("id"))
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return utils.ErrorResponse(c, fiber.StatusBadRequest, "invalid id", err)
+	}
 	book, err := h.Usecase.GetByID(c.Context(), id)
 	if err != nil {
 		return utils.ErrorResponse(c, fiber.StatusNotFound, "books not found", nil)
@@ -177,4 +187,85 @@ func (h *BookHandler) Delete(c *fiber.Ctx) error {
 		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "something went wrong", nil)
 	}
 	return utils.SuccessResponse(c, fiber.StatusOK, "delete successfully", nil)
+}
+
+func (h *BookHandler) CreateCategory(c *fiber.Ctx) error {
+	req, ok := c.Locals("validateCategory").(book.CategoryRequest)
+	if !ok {
+		return utils.ErrorResponse(c, fiber.StatusBadRequest, "invalid category data", nil)
+	}
+
+	category := &model.Category{
+		Name: req.Name,
+		Slug: req.Slug,
+	}
+
+	err := h.Usecase.GetCategory(c.Context(), req.Name)
+	if err == nil {
+		return utils.ErrorResponse(c, fiber.StatusConflict, "category name already exists", nil)
+	} else if !errors.Is(err, gorm.ErrRecordNotFound) {
+		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "failed to check existing category", nil)
+	}
+
+	if err := h.Usecase.CreateCategory(c.Context(), category); err != nil {
+		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "something went wrong", nil)
+	}
+
+	return utils.SuccessResponse(c, fiber.StatusCreated, "successfully add the category", category)
+}
+
+func (h *BookHandler) UpdateCategory(c *fiber.Ctx) error {
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return utils.ErrorResponse(c, fiber.StatusBadRequest, "invalid id", err)
+	}
+	req := c.Locals("validateCategory").(book.CategoryRequest)
+
+	category := &model.Category{
+		Name: req.Name,
+		Slug: req.Slug,
+	}
+
+	err = h.Usecase.GetCategoryByID(c.Context(), id)
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		return utils.ErrorResponse(c, fiber.StatusNotFound, "category not found", err)
+	}
+
+	err = h.Usecase.UpdateCategory(c.Context(), category)
+	if err != nil {
+		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "something went wrong", nil)
+	}
+	return utils.SuccessResponse(c, fiber.StatusOK, "category update successfully", req)
+}
+
+func (h *BookHandler) DeleteCategory(c *fiber.Ctx) error {
+	id, err := strconv.Atoi(c.Params("id"))
+
+	if err != nil {
+		return utils.ErrorResponse(c, fiber.StatusBadRequest, "invalid id", err)
+	}
+	err = h.Usecase.GetCategoryByID(c.Context(), id)
+	if err != nil && errors.Is(err, gorm.ErrRecordNotFound) {
+		return utils.ErrorResponse(c, fiber.StatusNotFound, "category not found", err)
+	}
+	err = h.Usecase.DeleteCategory(c.Context(), id)
+	if err != nil {
+		if errors.Is(err, config.ErrCategoryStillUsed) {
+			return utils.ErrorResponse(c, fiber.StatusConflict, config.ErrCategoryStillUsed.Error(), nil)
+		}
+		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "something went wrong", err)
+	}
+	return utils.SuccessResponse(c, fiber.StatusOK, "delete successfully", nil)
+}
+
+func (h *BookHandler) ListCategory(c *fiber.Ctx) error {
+	// id, err := strconv.Atoi(c.Params("category_id"))
+	// if err != nil {
+	// 	return utils.ErrorResponse(c, fiber.StatusBadRequest, "invalid id", err)
+	// }
+	category, err := h.Usecase.ListByCategory(c.Context())
+	if err != nil {
+		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "something went wrong", nil)
+	}
+	return utils.SuccessResponse(c, fiber.StatusOK, "successfully get list category", category)
 }

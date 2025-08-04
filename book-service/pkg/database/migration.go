@@ -12,5 +12,5 @@ func RunMigration(db *gorm.DB) {
 		fmt.Println("Migration gagal:", err)
 		return
 	}
-	fmt.Println("Migration berhasil")
+	fmt.Println("Migration berhasil Bro")
 }

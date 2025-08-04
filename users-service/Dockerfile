@@ -2,7 +2,8 @@ FROM golang:1.24.5
 
 WORKDIR /app
 
-COPY . .
+COPY ./shared /app/shared
+COPY ./users-service /app/users-service
 
 WORKDIR /app/users-service
 

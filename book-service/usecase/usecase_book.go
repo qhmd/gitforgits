@@ -20,6 +20,10 @@ func (u *BookUseCase) GetByID(ctx context.Context, id int) (*model.Book, error) 
 	return u.repo.GetBookByID(ctx, id)
 }
 
+func (u *BookUseCase) ListByCategory(ctx context.Context) ([]*model.Category, error) {
+	return u.repo.ListCategory(ctx)
+}
+
 func (u *BookUseCase) List(ctx context.Context) ([]*model.Book, error) {
 	return u.repo.ListBook(ctx)
 }
@@ -36,6 +40,26 @@ func (u *BookUseCase) Create(ctx context.Context, b *model.Book) error {
 	}
 
 	return u.repo.CreateBook(ctx, b)
+}
+
+func (u *BookUseCase) GetCategory(ctx context.Context, category string) error {
+	return u.repo.GetCategory(ctx, category)
+}
+
+func (u *BookUseCase) GetCategoryByID(ctx context.Context, id int) error {
+	return u.repo.GetCategoryByID(ctx, id)
+}
+
+func (u *BookUseCase) CreateCategory(ctx context.Context, category *model.Category) error {
+	return u.repo.CreateCategory(ctx, category)
+}
+
+func (u *BookUseCase) UpdateCategory(ctx context.Context, category *model.Category) error {
+	return u.repo.UpdateCategory(ctx, category)
+}
+
+func (u *BookUseCase) DeleteCategory(ctx context.Context, id int) error {
+	return u.repo.DeleteCategory(ctx, id)
 }
 
 func (u *BookUseCase) Delete(ctx context.Context, id int) error {
