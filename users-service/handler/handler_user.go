@@ -1,12 +1,16 @@
 package handler
 
 import (
+	"errors"
 	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/qhmd/gitforgits/shared/dto"
 	"github.com/qhmd/gitforgits/shared/middleware"
+	"github.com/qhmd/gitforgits/shared/models"
 	"github.com/qhmd/gitforgits/shared/utils"
+	"github.com/qhmd/gitforgits/users-service/config"
 	"github.com/qhmd/gitforgits/users-service/usecase"
 )
 
@@ -18,7 +22,7 @@ func NewHandlerUser(app *fiber.App, uc *usecase.UsersUseCase) {
 	h := &UserHandler{uc: uc}
 	app.Get("/admin/users/:id<^[0-9]+$>", middleware.JWT(), middleware.IsAdmin(), h.GetUserByID)
 	app.Get("/admin/users/", middleware.JWT(), middleware.IsAdmin(), h.GetListUsers)
-	// app.Put("/admin/users/:id<^[0-9]+$>", middleware.JWT(), middleware.IsAdmin(), middleware.ValidateUserUpdate(), h.UpdateUsers)
+	app.Put("/admin/users/:id<^[0-9]+$>", middleware.JWT(), middleware.IsAdmin(), middleware.ValidateUserUpdate(), h.UpdateUsers)
 	app.Delete("admin/users/:id<^[0-9]+$>", middleware.JWT(), middleware.IsAdmin(), h.DeleteUserByID)
 }
 
@@ -82,30 +86,37 @@ func (h *UserHandler) GetListUsers(c *fiber.Ctx) error {
 // @Failure 409 {object} users.EmailAlreadyUsed
 // @Failure 500 {object} users.ErrorResponse
 // // @Router /admin/users/{id} [put]
-// func (h *UserHandler) UpdateUsers(c *fiber.Ctx) error {
-// 	id, err := strconv.Atoi(c.Params("id"))
-// 	if err != nil {
-// 		return utils.ErrorResponse(c, fiber.StatusBadRequest, "invalid id", nil)
-// 	}
-// 	// user := c.Locals("validateUser").(authDto.UserResponse)
+func (h *UserHandler) UpdateUsers(c *fiber.Ctx) error {
+	id, err := strconv.Atoi(c.Params("id"))
+	if err != nil {
+		return utils.ErrorResponse(c, fiber.StatusBadRequest, "invalid id", nil)
+	}
+	user := c.Locals("validateUser").(dto.UserResponse)
 
-// 	_, err = h.uc.GetUserByID(c.Context(), id)
-// 	fmt.Print(err)
-// 	if err != nil {
-// 		return utils.ErrorResponse(c, fiber.StatusNotFound, "user not found", nil)
+	_, err = h.uc.GetUserByID(c.Context(), id)
+	fmt.Print(err)
+	if err != nil {
+		return utils.ErrorResponse(c, fiber.StatusNotFound, "user not found", nil)
 
-// 	}
+	}
 
-// 	updateUser, err := h.uc.UpdateUser(c.Context(), &user, id)
-// 	if err != nil {
-// 		if errors.Is(err, config.ErrUserExists) {
-// 			return utils.ErrorResponse(c, fiber.StatusConflict, "try another email", "email already used")
-// 		}
-// 		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "something went wrong", nil)
-// 	}
-// 	fmt.Print("updated user : ", updateUser)
-// 	return utils.SuccessResponse(c, fiber.StatusOK, "successfully update the user", updateUser)
-// }
+	users := &models.Auth{
+		Name:     user.Name,
+		Email:    user.Email,
+		Password: user.Password,
+		Role:     user.Role,
+	}
+
+	updateUser, err := h.uc.UpdateUser(c.Context(), users, int32(id))
+	if err != nil {
+		if errors.Is(err, config.ErrUserExists) {
+			return utils.ErrorResponse(c, fiber.StatusConflict, "try another email", "email already used")
+		}
+		return utils.ErrorResponse(c, fiber.StatusInternalServerError, "something went wrong", nil)
+	}
+	fmt.Print("updated user : ", updateUser)
+	return utils.SuccessResponse(c, fiber.StatusOK, "successfully update the user", updateUser)
+}
 
 // DeleteUserByID godoc
 // @Summary Delete user

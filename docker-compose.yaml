@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: users-service/Dockerfile
     ports:
-      - "8082:8080"  # Mengekspose port container ke host
+      - "50051:50051"  # Mengekspose port container ke host
     env_file:
       - ./users-service/.env  # File .env khusus untuk auth-service
     container_name: users-service

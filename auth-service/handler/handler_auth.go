@@ -7,6 +7,7 @@ import (
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+
 	"github.com/qhmd/gitforgits/auth-service/config"
 	"github.com/qhmd/gitforgits/auth-service/usecase"
 	"github.com/qhmd/gitforgits/shared/dto"

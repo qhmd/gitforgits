@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/qhmd/gitforgits/auth-service/client"
 	"github.com/qhmd/gitforgits/auth-service/model"
 	"github.com/qhmd/gitforgits/config"
 	"github.com/qhmd/gitforgits/shared/dto"
@@ -14,11 +15,12 @@ import (
 )
 
 type AuthUseCase struct {
-	repo model.AuthRepository
+	repo       model.AuthRepository
+	AuthClient *client.AuthServiceClient
 }
 
-func NewAuthUsecase(repo model.AuthRepository) *AuthUseCase {
-	return &AuthUseCase{repo: repo}
+func NewAuthUsecase(repo model.AuthRepository, authClient *client.AuthServiceClient) *AuthUseCase {
+	return &AuthUseCase{repo: repo, AuthClient: authClient}
 }
 
 func (u *AuthUseCase) RegisterUser(ctx context.Context, us *models.Auth) error {
@@ -31,6 +33,7 @@ func (u *AuthUseCase) RegisterUser(ctx context.Context, us *models.Auth) error {
 	if existing != nil {
 		return config.ErrUserExists
 	}
+	u.AuthClient.SendAuth(ctx, us)
 	return u.repo.RegisterUser(ctx, us)
 }
 
@@ -83,13 +86,14 @@ func (u *AuthUseCase) UpdateMe(ctx context.Context, user *models.Auth) (*dto.Reg
 		Name:     user.Name,
 		Email:    user.Email,
 		Password: hashedPassword,
+		Role:     user.Role,
 	}
 
 	putData, err := u.repo.UpdateMe(ctx, userUpdateReponse)
 	if err != nil {
 		return nil, err
 	}
-
+	u.AuthClient.SendAuth(ctx, userUpdateReponse)
 	dataToRegist := &dto.RegisterRequest{
 		Name:     putData.Name,
 		Email:    putData.Email,
