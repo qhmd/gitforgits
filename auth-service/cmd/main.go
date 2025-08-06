@@ -36,7 +36,10 @@ func main() {
 	database.RunMigration(db)
 
 	repoAuth := repo.NewMySQLAuthRepository(db)
+
 	ucAuth := usecase.NewAuthUsecase(repoAuth, authClient)
+
+	// handler
 	handler.NewAuthHandler(app, ucAuth)
 	GrcpHandler := handler.NewUsersGrcpHandler(ucAuth)
 

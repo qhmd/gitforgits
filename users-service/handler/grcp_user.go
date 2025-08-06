@@ -11,12 +11,12 @@ import (
 )
 
 type AuthGrcpHandler struct {
-	authproto.UnimplementedAuthServiceServer
+	authproto.UnsafeAuthServiceServer
 	uc *usecase.UsersUseCase
 }
 
-func NewAuthGrcpHandler(u usecase.UsersUseCase) *AuthGrcpHandler {
-	return &AuthGrcpHandler{uc: &u}
+func NewAuthGrcpHandler(u *usecase.UsersUseCase) *AuthGrcpHandler {
+	return &AuthGrcpHandler{uc: u}
 }
 
 func (h *AuthGrcpHandler) CreateAuth(c context.Context, req *authproto.CreateAuthRequest) (*authproto.CreateAuthResponse, error) {
@@ -34,20 +34,13 @@ func (h *AuthGrcpHandler) CreateAuth(c context.Context, req *authproto.CreateAut
 	} else if exist != nil {
 		if exist.ID == uint(req.Id) {
 			user.Role = exist.Role
-			data, err := h.uc.UpdateUser(c, user, req.GetId())
+			_, err := h.uc.UpdateUser(c, user, req.GetId())
 			if err != nil {
 				return nil, err
 			}
 			resp := &authproto.CreateAuthResponse{
 				Success: true,
 				Message: "User updated successfully",
-				Data: &authproto.CreateAuthRequest{
-					Id:       int32(data.ID),
-					Name:     data.Name,
-					Email:    data.Email,
-					Password: data.Password,
-					Role:     data.Role,
-				},
 			}
 			return resp, nil
 		}
@@ -61,5 +54,5 @@ func (h *AuthGrcpHandler) CreateAuth(c context.Context, req *authproto.CreateAut
 		}
 		return nil, err
 	}
-	return &authproto.CreateAuthResponse{Success: true, Message: "User created successfully", Data: req}, nil
+	return &authproto.CreateAuthResponse{Success: true, Message: "User created successfully"}, nil
 }

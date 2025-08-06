@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+option go_package = "../../shared/proto/book-proto";
+
+message BookRequest {
+  string title = 1;           // How To Become Backend Engineer
+  string author = 2;          // John Smith
+  string publisher = 3;       // TechBooks Publishing
+  string release_date = 4;    // Format: YYYY-MM-DD (e.g., 2025-08-01)
+  string language = 5;        // English
+  int32 pages = 6;            // 205
+  string format = 7;          // One of: PDF, EPUB, MOBI
+  string description = 8;     // Book description
+  double price = 9;           // 99.000
+  string file_url = 10;       // https://example.com/files/book.pdf
+  string thumbnail = 11;      // https://example.com/images/book-cover.jpg
+  uint32 category_id = 12;    // ID of the category
+}
+
+message CategoryRequest {
+  string name = 1;  // Technology
+  string slug = 2;  // technology
+}
+
+message BookResponse {
+    bool success = 1;
+    string message = 2;
+}

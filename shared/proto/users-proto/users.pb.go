@@ -9,8 +9,6 @@ package users_proto
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
-	timestamppb "google.golang.org/protobuf/types/known/timestamppb"
 	reflect "reflect"
 	sync "sync"
 	unsafe "unsafe"
@@ -23,50 +21,6 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-type GetUserByIdRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetUserByIdRequest) Reset() {
-	*x = GetUserByIdRequest{}
-	mi := &file_users_proto_msgTypes[0]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetUserByIdRequest) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetUserByIdRequest) ProtoMessage() {}
-
-func (x *GetUserByIdRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_users_proto_msgTypes[0]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetUserByIdRequest.ProtoReflect.Descriptor instead.
-func (*GetUserByIdRequest) Descriptor() ([]byte, []int) {
-	return file_users_proto_rawDescGZIP(), []int{0}
-}
-
-func (x *GetUserByIdRequest) GetId() int32 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
 type DeleteUserRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
@@ -76,7 +30,7 @@ type DeleteUserRequest struct {
 
 func (x *DeleteUserRequest) Reset() {
 	*x = DeleteUserRequest{}
-	mi := &file_users_proto_msgTypes[1]
+	mi := &file_users_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -88,7 +42,7 @@ func (x *DeleteUserRequest) String() string {
 func (*DeleteUserRequest) ProtoMessage() {}
 
 func (x *DeleteUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_users_proto_msgTypes[1]
+	mi := &file_users_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -101,7 +55,7 @@ func (x *DeleteUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteUserRequest.ProtoReflect.Descriptor instead.
 func (*DeleteUserRequest) Descriptor() ([]byte, []int) {
-	return file_users_proto_rawDescGZIP(), []int{1}
+	return file_users_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *DeleteUserRequest) GetId() int32 {
@@ -124,7 +78,7 @@ type UserRequestData struct {
 
 func (x *UserRequestData) Reset() {
 	*x = UserRequestData{}
-	mi := &file_users_proto_msgTypes[2]
+	mi := &file_users_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -136,7 +90,7 @@ func (x *UserRequestData) String() string {
 func (*UserRequestData) ProtoMessage() {}
 
 func (x *UserRequestData) ProtoReflect() protoreflect.Message {
-	mi := &file_users_proto_msgTypes[2]
+	mi := &file_users_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -149,7 +103,7 @@ func (x *UserRequestData) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UserRequestData.ProtoReflect.Descriptor instead.
 func (*UserRequestData) Descriptor() ([]byte, []int) {
-	return file_users_proto_rawDescGZIP(), []int{2}
+	return file_users_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *UserRequestData) GetId() int32 {
@@ -187,211 +141,7 @@ func (x *UserRequestData) GetRole() string {
 	return ""
 }
 
-type UserResponseData struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            int32                  `protobuf:"varint,1,opt,name=id,proto3" json:"id,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Email         string                 `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
-	Role          string                 `protobuf:"bytes,4,opt,name=role,proto3" json:"role,omitempty"`
-	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *UserResponseData) Reset() {
-	*x = UserResponseData{}
-	mi := &file_users_proto_msgTypes[3]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *UserResponseData) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*UserResponseData) ProtoMessage() {}
-
-func (x *UserResponseData) ProtoReflect() protoreflect.Message {
-	mi := &file_users_proto_msgTypes[3]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use UserResponseData.ProtoReflect.Descriptor instead.
-func (*UserResponseData) Descriptor() ([]byte, []int) {
-	return file_users_proto_rawDescGZIP(), []int{3}
-}
-
-func (x *UserResponseData) GetId() int32 {
-	if x != nil {
-		return x.Id
-	}
-	return 0
-}
-
-func (x *UserResponseData) GetName() string {
-	if x != nil {
-		return x.Name
-	}
-	return ""
-}
-
-func (x *UserResponseData) GetEmail() string {
-	if x != nil {
-		return x.Email
-	}
-	return ""
-}
-
-func (x *UserResponseData) GetRole() string {
-	if x != nil {
-		return x.Role
-	}
-	return ""
-}
-
-func (x *UserResponseData) GetCreatedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.CreatedAt
-	}
-	return nil
-}
-
-func (x *UserResponseData) GetUpdatedAt() *timestamppb.Timestamp {
-	if x != nil {
-		return x.UpdatedAt
-	}
-	return nil
-}
-
-type GetUserResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	Data          *UserResponseData      `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetUserResponse) Reset() {
-	*x = GetUserResponse{}
-	mi := &file_users_proto_msgTypes[4]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetUserResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetUserResponse) ProtoMessage() {}
-
-func (x *GetUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_users_proto_msgTypes[4]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetUserResponse.ProtoReflect.Descriptor instead.
-func (*GetUserResponse) Descriptor() ([]byte, []int) {
-	return file_users_proto_rawDescGZIP(), []int{4}
-}
-
-func (x *GetUserResponse) GetSuccess() bool {
-	if x != nil {
-		return x.Success
-	}
-	return false
-}
-
-func (x *GetUserResponse) GetMessage() string {
-	if x != nil {
-		return x.Message
-	}
-	return ""
-}
-
-func (x *GetUserResponse) GetData() *UserResponseData {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
-
-type GetUserListResponse struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
-	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	Data          []*UserResponseData    `protobuf:"bytes,3,rep,name=data,proto3" json:"data,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
-}
-
-func (x *GetUserListResponse) Reset() {
-	*x = GetUserListResponse{}
-	mi := &file_users_proto_msgTypes[5]
-	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-	ms.StoreMessageInfo(mi)
-}
-
-func (x *GetUserListResponse) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*GetUserListResponse) ProtoMessage() {}
-
-func (x *GetUserListResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_users_proto_msgTypes[5]
-	if x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use GetUserListResponse.ProtoReflect.Descriptor instead.
-func (*GetUserListResponse) Descriptor() ([]byte, []int) {
-	return file_users_proto_rawDescGZIP(), []int{5}
-}
-
-func (x *GetUserListResponse) GetSuccess() bool {
-	if x != nil {
-		return x.Success
-	}
-	return false
-}
-
-func (x *GetUserListResponse) GetMessage() string {
-	if x != nil {
-		return x.Message
-	}
-	return ""
-}
-
-func (x *GetUserListResponse) GetData() []*UserResponseData {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
-
-type DeleteResponse struct {
+type Response struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
@@ -399,21 +149,21 @@ type DeleteResponse struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *DeleteResponse) Reset() {
-	*x = DeleteResponse{}
-	mi := &file_users_proto_msgTypes[6]
+func (x *Response) Reset() {
+	*x = Response{}
+	mi := &file_users_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *DeleteResponse) String() string {
+func (x *Response) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*DeleteResponse) ProtoMessage() {}
+func (*Response) ProtoMessage() {}
 
-func (x *DeleteResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_users_proto_msgTypes[6]
+func (x *Response) ProtoReflect() protoreflect.Message {
+	mi := &file_users_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -424,19 +174,19 @@ func (x *DeleteResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use DeleteResponse.ProtoReflect.Descriptor instead.
-func (*DeleteResponse) Descriptor() ([]byte, []int) {
-	return file_users_proto_rawDescGZIP(), []int{6}
+// Deprecated: Use Response.ProtoReflect.Descriptor instead.
+func (*Response) Descriptor() ([]byte, []int) {
+	return file_users_proto_rawDescGZIP(), []int{2}
 }
 
-func (x *DeleteResponse) GetSuccess() bool {
+func (x *Response) GetSuccess() bool {
 	if x != nil {
 		return x.Success
 	}
 	return false
 }
 
-func (x *DeleteResponse) GetMessage() string {
+func (x *Response) GetMessage() string {
 	if x != nil {
 		return x.Message
 	}
@@ -447,9 +197,7 @@ var File_users_proto protoreflect.FileDescriptor
 
 const file_users_proto_rawDesc = "" +
 	"\n" +
-	"\vusers.proto\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bgoogle/protobuf/empty.proto\"$\n" +
-	"\x12GetUserByIdRequest\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x05R\x02id\"#\n" +
+	"\vusers.proto\"#\n" +
 	"\x11DeleteUserRequest\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x05R\x02id\"{\n" +
 	"\x0fUserRequestData\x12\x0e\n" +
@@ -457,34 +205,15 @@ const file_users_proto_rawDesc = "" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
 	"\x05email\x18\x03 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x04 \x01(\tR\bpassword\x12\x12\n" +
-	"\x04role\x18\x05 \x01(\tR\x04role\"\xd6\x01\n" +
-	"\x10UserResponseData\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\x05R\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
-	"\x05email\x18\x03 \x01(\tR\x05email\x12\x12\n" +
-	"\x04role\x18\x04 \x01(\tR\x04role\x129\n" +
-	"\n" +
-	"created_at\x18\x05 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
-	"\n" +
-	"updated_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"l\n" +
-	"\x0fGetUserResponse\x12\x18\n" +
+	"\x04role\x18\x05 \x01(\tR\x04role\">\n" +
+	"\bResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\x12%\n" +
-	"\x04data\x18\x03 \x01(\v2\x11.UserResponseDataR\x04data\"p\n" +
-	"\x13GetUserListResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\x12%\n" +
-	"\x04data\x18\x03 \x03(\v2\x11.UserResponseDataR\x04data\"D\n" +
-	"\x0eDeleteResponse\x12\x18\n" +
-	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage2\xe6\x01\n" +
-	"\fUsersService\x124\n" +
-	"\vGetUserById\x12\x13.GetUserByIdRequest\x1a\x10.GetUserResponse\x12;\n" +
-	"\vGetListUser\x12\x16.google.protobuf.Empty\x1a\x14.GetUserListResponse\x120\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage2f\n" +
+	"\fUsersService\x12)\n" +
 	"\n" +
-	"UpdateUser\x12\x10.UserRequestData\x1a\x10.GetUserResponse\x121\n" +
+	"UpdateUser\x12\x10.UserRequestData\x1a\t.Response\x12+\n" +
 	"\n" +
-	"DeleteUser\x12\x12.DeleteUserRequest\x1a\x0f.DeleteResponseB\x19Z\x17../../proto/users-protob\x06proto3"
+	"DeleteUser\x12\x12.DeleteUserRequest\x1a\t.ResponseB Z\x1e../../shared/proto/users-protob\x06proto3"
 
 var (
 	file_users_proto_rawDescOnce sync.Once
@@ -498,36 +227,22 @@ func file_users_proto_rawDescGZIP() []byte {
 	return file_users_proto_rawDescData
 }
 
-var file_users_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_users_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
 var file_users_proto_goTypes = []any{
-	(*GetUserByIdRequest)(nil),    // 0: GetUserByIdRequest
-	(*DeleteUserRequest)(nil),     // 1: DeleteUserRequest
-	(*UserRequestData)(nil),       // 2: UserRequestData
-	(*UserResponseData)(nil),      // 3: UserResponseData
-	(*GetUserResponse)(nil),       // 4: GetUserResponse
-	(*GetUserListResponse)(nil),   // 5: GetUserListResponse
-	(*DeleteResponse)(nil),        // 6: DeleteResponse
-	(*timestamppb.Timestamp)(nil), // 7: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),         // 8: google.protobuf.Empty
+	(*DeleteUserRequest)(nil), // 0: DeleteUserRequest
+	(*UserRequestData)(nil),   // 1: UserRequestData
+	(*Response)(nil),          // 2: Response
 }
 var file_users_proto_depIdxs = []int32{
-	7, // 0: UserResponseData.created_at:type_name -> google.protobuf.Timestamp
-	7, // 1: UserResponseData.updated_at:type_name -> google.protobuf.Timestamp
-	3, // 2: GetUserResponse.data:type_name -> UserResponseData
-	3, // 3: GetUserListResponse.data:type_name -> UserResponseData
-	0, // 4: UsersService.GetUserById:input_type -> GetUserByIdRequest
-	8, // 5: UsersService.GetListUser:input_type -> google.protobuf.Empty
-	2, // 6: UsersService.UpdateUser:input_type -> UserRequestData
-	1, // 7: UsersService.DeleteUser:input_type -> DeleteUserRequest
-	4, // 8: UsersService.GetUserById:output_type -> GetUserResponse
-	5, // 9: UsersService.GetListUser:output_type -> GetUserListResponse
-	4, // 10: UsersService.UpdateUser:output_type -> GetUserResponse
-	6, // 11: UsersService.DeleteUser:output_type -> DeleteResponse
-	8, // [8:12] is the sub-list for method output_type
-	4, // [4:8] is the sub-list for method input_type
-	4, // [4:4] is the sub-list for extension type_name
-	4, // [4:4] is the sub-list for extension extendee
-	0, // [0:4] is the sub-list for field type_name
+	1, // 0: UsersService.UpdateUser:input_type -> UserRequestData
+	0, // 1: UsersService.DeleteUser:input_type -> DeleteUserRequest
+	2, // 2: UsersService.UpdateUser:output_type -> Response
+	2, // 3: UsersService.DeleteUser:output_type -> Response
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
+	0, // [0:0] is the sub-list for extension type_name
+	0, // [0:0] is the sub-list for extension extendee
+	0, // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_users_proto_init() }
@@ -541,7 +256,7 @@ func file_users_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_users_proto_rawDesc), len(file_users_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   7,
+			NumMessages:   3,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

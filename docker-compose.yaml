@@ -6,6 +6,7 @@ services:
       context: .
       dockerfile: auth-service/Dockerfile
     ports:
+      - "50052:50052"  # Mengekspose port container ke host
       - "8080:8080"  # Mengekspose port container ke host
     env_file:
       - ./auth-service/.env  # File .env khusus untuk auth-service
@@ -21,8 +22,9 @@ services:
       dockerfile: users-service/Dockerfile
     ports:
       - "50051:50051"  # Mengekspose port container ke host
+      - "8082:8080"  # untuk fiber
     env_file:
-      - ./users-service/.env  # File .env khusus untuk auth-service
+      - ./users-service/.env
     container_name: users-service
     working_dir: /app/users-service
     depends_on:
@@ -41,6 +43,20 @@ services:
     working_dir: /app/book-service
     depends_on:
       - book-db
+    command: go run ./cmd/main.go
+  
+  cartservice:
+    build:
+      context: .
+      dockerfile: cart-service/Dockerfile
+    ports:
+      - "8084:8080"
+    env_file:
+      - ./cart-service/.env
+    container_name: cart-service
+    working_dir: /app/cart-service
+    depends_on:
+      - cart-db
     command: go run ./cmd/main.go
 
 
@@ -87,6 +103,21 @@ services:
       - "3309:3306"  # Host 3307 → Container 3306 (MySQL default port)
     volumes:
       - book-db-data:/var/lib/mysql  # Menyimpan data MySQL secara persisten
+  
+  cart-db:
+    image: mysql:8
+    container_name: mysql-cart-db
+    restart: always
+    env_file:
+      - path: .env
+        required: true 
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASS}  # Menggunakan variabel dari .env
+      MYSQL_DATABASE: ${DB_NAME}
+    ports:
+      - "3310:3306"  # Host 3307 → Container 3306 (MySQL default port)
+    volumes:
+      - cart-db-data:/var/lib/mysql  # Menyimpan data MySQL secara persisten
 
   # Service untuk phpMyAdmin
   phpmyadmin:
@@ -107,3 +138,4 @@ volumes:
   auth-db-data:  # Volume untuk menyimpan data MySQL
   users-db-data:
   book-db-data:
+  cart-db-data:

@@ -31,7 +31,7 @@ func main() {
 
 	// for uc
 	repoUsers := repo.NewUserMySqlRepo(db)
-	clientAuth := client.NewAuthServiceClient("authservice:50052")
+	clientAuth := client.NewUsersServiceClient("authservice:50052")
 
 	// app from fiber
 	app := fiber.New()
@@ -41,7 +41,7 @@ func main() {
 
 	// handler
 	handler.NewHandlerUser(app, ucUsers)
-	userGrcpHandler := handler.NewAuthGrcpHandler(*ucUsers)
+	userGrcpHandler := handler.NewAuthGrcpHandler(ucUsers)
 
 	go func() {
 		listener, err := net.Listen("tcp", "0.0.0.0:50051")

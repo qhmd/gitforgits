@@ -18,5 +18,4 @@ message CreateAuthRequest {
 message CreateAuthResponse {
     bool success = 1;
     string message = 2;
-    CreateAuthRequest data = 3;
 }

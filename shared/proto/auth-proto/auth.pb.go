@@ -101,7 +101,6 @@ type CreateAuthResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Success       bool                   `protobuf:"varint,1,opt,name=success,proto3" json:"success,omitempty"`
 	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	Data          *CreateAuthRequest     `protobuf:"bytes,3,opt,name=data,proto3" json:"data,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -150,13 +149,6 @@ func (x *CreateAuthResponse) GetMessage() string {
 	return ""
 }
 
-func (x *CreateAuthResponse) GetData() *CreateAuthRequest {
-	if x != nil {
-		return x.Data
-	}
-	return nil
-}
-
 var File_auth_proto protoreflect.FileDescriptor
 
 const file_auth_proto_rawDesc = "" +
@@ -168,14 +160,13 @@ const file_auth_proto_rawDesc = "" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
 	"\x05email\x18\x03 \x01(\tR\x05email\x12\x1a\n" +
 	"\bpassword\x18\x04 \x01(\tR\bpassword\x12\x12\n" +
-	"\x04role\x18\x05 \x01(\tR\x04role\"p\n" +
+	"\x04role\x18\x05 \x01(\tR\x04role\"H\n" +
 	"\x12CreateAuthResponse\x12\x18\n" +
 	"\asuccess\x18\x01 \x01(\bR\asuccess\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\x12&\n" +
-	"\x04data\x18\x03 \x01(\v2\x12.CreateAuthRequestR\x04data2D\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage2D\n" +
 	"\vAuthService\x125\n" +
 	"\n" +
-	"CreateAuth\x12\x12.CreateAuthRequest\x1a\x13.CreateAuthResponseB\x18Z\x16../../proto/auth-protob\x06proto3"
+	"CreateAuth\x12\x12.CreateAuthRequest\x1a\x13.CreateAuthResponseB\x1fZ\x1d../../shared/proto/auth-protob\x06proto3"
 
 var (
 	file_auth_proto_rawDescOnce sync.Once
@@ -195,14 +186,13 @@ var file_auth_proto_goTypes = []any{
 	(*CreateAuthResponse)(nil), // 1: CreateAuthResponse
 }
 var file_auth_proto_depIdxs = []int32{
-	0, // 0: CreateAuthResponse.data:type_name -> CreateAuthRequest
-	0, // 1: AuthService.CreateAuth:input_type -> CreateAuthRequest
-	1, // 2: AuthService.CreateAuth:output_type -> CreateAuthResponse
-	2, // [2:3] is the sub-list for method output_type
-	1, // [1:2] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	0, // 0: AuthService.CreateAuth:input_type -> CreateAuthRequest
+	1, // 1: AuthService.CreateAuth:output_type -> CreateAuthResponse
+	1, // [1:2] is the sub-list for method output_type
+	0, // [0:1] is the sub-list for method input_type
+	0, // [0:0] is the sub-list for extension type_name
+	0, // [0:0] is the sub-list for extension extendee
+	0, // [0:0] is the sub-list for field type_name
 }
 
 func init() { file_auth_proto_init() }

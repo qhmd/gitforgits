@@ -1,19 +1,11 @@
 syntax = "proto3";
 
-option go_package = "../../proto/users-proto";
+option go_package = "../../shared/proto/users-proto";
 
-import "google/protobuf/timestamp.proto";
-import "google/protobuf/empty.proto";
 
 service UsersService {
-    rpc GetUserById (GetUserByIdRequest) returns (GetUserResponse);
-    rpc GetListUser (google.protobuf.Empty) returns (GetUserListResponse);
-    rpc UpdateUser (UserRequestData) returns (GetUserResponse);
-    rpc DeleteUser (DeleteUserRequest) returns (DeleteResponse);
-}
-
-message GetUserByIdRequest {
-    int32 id = 1;
+    rpc UpdateUser (UserRequestData) returns (Response);
+    rpc DeleteUser (DeleteUserRequest) returns (Response);
 }
 
 message DeleteUserRequest {
@@ -28,28 +20,7 @@ message UserRequestData {
     string role = 5;
 }
 
-message UserResponseData {
-    int32 id = 1;
-    string name = 2;
-    string email = 3;
-    string role = 4;
-    google.protobuf.Timestamp created_at = 5;
-    google.protobuf.Timestamp updated_at = 6;
-}
-
-message GetUserResponse {
-    bool success = 1;
-    string message = 2;
-    UserResponseData data = 3;
-}
-
-message GetUserListResponse {
-    bool success = 1;
-    string message = 2;
-    repeated UserResponseData data = 3;
-}
-
-message DeleteResponse {
+message Response {
     bool success = 1;
     string message = 2;
 }

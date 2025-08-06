@@ -93,7 +93,14 @@ func (u *AuthUseCase) UpdateMe(ctx context.Context, user *models.Auth) (*dto.Reg
 	if err != nil {
 		return nil, err
 	}
-	u.AuthClient.SendAuth(ctx, userUpdateReponse)
+
+	fmt.Print("isi uc di auth", userUpdateReponse.ID)
+
+	// kalau ada role, berarti dari users, kalau tidak ada berarti dari Auth / Update diri sendiri
+	if userUpdateReponse.Role == "" {
+		u.AuthClient.SendAuth(ctx, userUpdateReponse)
+	}
+
 	dataToRegist := &dto.RegisterRequest{
 		Name:     putData.Name,
 		Email:    putData.Email,
@@ -103,8 +110,8 @@ func (u *AuthUseCase) UpdateMe(ctx context.Context, user *models.Auth) (*dto.Reg
 	return dataToRegist, nil
 }
 
-func (u *AuthUseCase) DeleteUserByID(ctx context.Context, id uint) (*models.Auth, error) {
-	return u.repo.GetUserByID(ctx, id)
+func (u *AuthUseCase) DeleteUserByID(ctx context.Context, id uint) error {
+	return u.repo.DeleteUser(ctx, id)
 }
 
 func (u *AuthUseCase) GetUserByID(ctx context.Context, id uint) (*models.Auth, error) {

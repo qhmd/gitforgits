@@ -14,10 +14,10 @@ import (
 
 type UsersUseCase struct {
 	repo        model.UserRepository
-	UsersClient *client.AuthServiceClient
+	UsersClient *client.UsersServiceClient
 }
 
-func NewUsersUseCase(repo model.UserRepository, userClient *client.AuthServiceClient) *UsersUseCase {
+func NewUsersUseCase(repo model.UserRepository, userClient *client.UsersServiceClient) *UsersUseCase {
 	return &UsersUseCase{repo: repo, UsersClient: userClient}
 }
 
@@ -40,17 +40,25 @@ func (uc *UsersUseCase) UpdateUser(ctx context.Context, user *models.Auth, id in
 		Password: pw,
 		Role:     user.Role,
 	}
+	fmt.Printf("isi exis : %v, dan isi err %v", data, err)
 
-	return uc.repo.UpdateUser(ctx, data, id)
+	uc.UsersClient.UpdateUsers(ctx, data, id)
+	updateData, err := uc.repo.UpdateUser(ctx, data, id)
+	if err != nil {
+		return nil, err
+	}
+
+	return updateData, nil
 }
 
 func (uc *UsersUseCase) DeleteUser(ctx context.Context, id int) error {
-	return uc.repo.DeleteUser(ctx, id)
+	uc.UsersClient.DeleteUser(ctx, int32(id))
+	results := uc.repo.DeleteUser(ctx, id)
+	return results
 }
 
 func (u *UsersUseCase) RegisterUser(ctx context.Context, us *models.Auth) error {
 	existing, err := u.repo.FindByEmail(ctx, us.Email)
-	fmt.Printf("isi exis : %v, dan isi err %v", existing, err)
 	if err != nil {
 		return err
 	}
@@ -58,5 +66,6 @@ func (u *UsersUseCase) RegisterUser(ctx context.Context, us *models.Auth) error 
 	if existing != nil {
 		return config.ErrUserExists
 	}
+
 	return u.repo.RegisterUser(ctx, us)
 }
